@@ -116,8 +116,8 @@ export function createOrbiModel({ compact = false } = {}) {
   mouthGeometry.setIndex(mouthIndices);
   const mouth = new THREE.Mesh(mouthGeometry, eyeMaterial); mouth.frustumCulled = false; face.add(mouth);
 
-  function update(pose, time, animated, lookX = 0, lookY = 0, gesture = 0) {
-    root.rotation.set(lookY * .1 + .03, lookX * .2 - .08, pose.tilt);
+  function update(pose, time, animated, lookX = 0, lookY = 0, gesture = 0, yaw = 0) {
+    root.rotation.set(lookY * .1 + .03, lookX * .2 - .08 + yaw, pose.tilt);
     root.position.y = pose.lift + gesture;
     bands.forEach(({pivot, base, band, restX}, i) => {
       pivot.rotation.z = base + pose.ring * (i % 2 ? 1 : -1) + (animated ? Math.sin(time * .36 + i * 1.2) * .027 : 0);

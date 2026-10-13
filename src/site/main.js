@@ -1,3 +1,4 @@
+import {arrowIcon} from '../ui/icons.js';
 import {fleet} from './data.js';
 import {initEnquiry} from './enquiry.js';
 import {mountElios} from './embedded-elios.js';
@@ -33,7 +34,7 @@ if(hero){
  tilt.addEventListener('keydown',e=>{const action={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'in',ArrowDown:'out','+':'in','=':'in','-':'out',Home:'reset'}[e.key];if(action){e.preventDefault();act(action);}});
  tilt.addEventListener('pointermove',e=>{if(paused||media.matches||e.pointerType==='touch'||raf)return;raf=requestAnimationFrame(()=>{const r=tilt.getBoundingClientRect();x=(e.clientX-r.left-r.width/2)/r.width*14;y=-(e.clientY-r.top-r.height/2)/r.height*8;update();raf=0;});});
  tilt.addEventListener('pointerleave',()=>{x=y=0;update();});
- const setPlatform=id=>{const f=fleet.find(f=>f.id===id);if(!f)return;stage.dataset.platform=f.id;image.src='/media/'+f.image+'.webp';image.alt=f.name;image.classList.toggle('elios-image',id==='elios');hero.querySelectorAll('[data-platform-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.platformSelect===id)));for(const [key,value] of [['name',f.name],['tag',f.eyebrow],['copy',f.description],['applications',f.applications.join(' · ')]])hero.querySelector('[data-platform-'+key+']').textContent=value;const a=hero.querySelector('.platform-link');a.href=f.source;a.innerHTML='Explore '+f.short+' <span aria-hidden="true">↗</span>';hero.querySelector('[data-platform-note]').textContent='Interactive product artwork · perspective and scale controls';reset();};
+ const setPlatform=id=>{const f=fleet.find(f=>f.id===id);if(!f)return;stage.dataset.platform=f.id;image.src='/media/'+f.image+'.webp';image.alt=f.name;image.classList.toggle('elios-image',id==='elios');hero.querySelectorAll('[data-platform-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.platformSelect===id)));for(const [key,value] of [['name',f.name],['tag',f.eyebrow],['copy',f.description],['applications',f.applications.join(' · ')]])hero.querySelector('[data-platform-'+key+']').textContent=value;const a=hero.querySelector('.platform-link');a.href=f.source;a.textContent='Explore '+f.short+' ';a.insertAdjacentHTML('beforeend',arrowIcon());hero.querySelector('[data-platform-note]').textContent='Interactive product artwork · perspective and scale controls';reset();};
  hero.querySelectorAll('[data-platform-select]').forEach(b=>b.addEventListener('click',()=>setPlatform(b.dataset.platformSelect)));
  let stageVisible=true,pointerActive=false,focusActive=false;
  const syncHover=()=>{hero.querySelector('.aircraft-position').style.animationPlayState=stageVisible&&!document.hidden&&!paused&&!media.matches&&!pointerActive&&!focusActive?'running':'paused';};

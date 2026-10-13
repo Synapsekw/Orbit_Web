@@ -1,3 +1,4 @@
+import {arrowIcon} from './ui/icons.js';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -104,7 +105,7 @@ export function initPanoramas() {
     }
   }, { rootMargin: '200px' });
   document.querySelectorAll('.panorama-plate').forEach(plate => observer.observe(plate));
-  const updateFullscreen = () => document.querySelectorAll('[data-pano-action="fullscreen"]').forEach(button => { const full = document.fullscreenElement === button.closest('.panorama-plate'); button.textContent = full ? 'Exit fullscreen ↙' : 'Fullscreen ↗'; button.setAttribute('aria-label', full ? 'Exit panorama fullscreen' : 'Open panorama fullscreen'); });
+  const updateFullscreen = () => document.querySelectorAll('[data-pano-action="fullscreen"]').forEach(button => { const full = document.fullscreenElement === button.closest('.panorama-plate'); button.textContent = full ? 'Exit fullscreen ' : 'Fullscreen '; button.insertAdjacentHTML('beforeend',arrowIcon(full?'down-left':'up-right')); button.setAttribute('aria-label', full ? 'Exit panorama fullscreen' : 'Open panorama fullscreen'); });
   document.addEventListener('fullscreenchange', updateFullscreen);
   addEventListener('pagehide', event => { if(event.persisted)return; observer.disconnect(); document.removeEventListener('fullscreenchange', updateFullscreen); cleanups.forEach(fn => fn()); });
 }

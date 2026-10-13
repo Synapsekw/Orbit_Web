@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createOrbiModel } from './orbi-model.js';
-import { sampleExpression, ORBI_STATES } from './orbi-motion.js';
+import { sampleExpression, sampleLauncherMotion, ORBI_STATES } from './orbi-motion.js';
 
 const instances = new WeakMap();
 
@@ -8,12 +8,14 @@ const instances = new WeakMap();
 export function createOrbiAvatar(element, options = {}) {
   if (!(element instanceof HTMLElement)) throw new TypeError('Orbi needs an HTML element.');
   if (instances.has(element)) return instances.get(element);
-  const { compact = false, interactive = true, fallbackUrl = '/orbi/orbi-fallback.webp', motion = true, renderMode = 'auto' } = options;
+  const { compact = false, interactive = true, playful = false, fallbackUrl = '/orbi/orbi-fallback.webp', motion = true, renderMode = 'auto' } = options;
   const wrapper = document.createElement('span'); wrapper.className = 'orbi-avatar'; wrapper.setAttribute('aria-hidden','true');
   const img = document.createElement('img'); img.className = 'orbi-avatar__fallback'; img.src = fallbackUrl; img.alt = ''; img.decoding = 'async'; img.draggable = false;
   const canvas = document.createElement('canvas'); canvas.className = 'orbi-avatar__canvas';
+  const shadow = playful ? document.createElement('span') : null;
+  if (shadow) { shadow.className = 'orbi-avatar__shadow'; shadow.setAttribute('aria-hidden','true'); element.append(shadow); }
   wrapper.append(img); element.append(wrapper);
-  let state = 'idle', destroyed = false, enabled = !!motion, manuallyVisible = true, inViewport = false;
+  let state = 'idle', destroyed = false, enabled = !!motion, manuallyVisible = true, inViewport = false, held = false;
   let renderer, model, environment, resizeObserver, intersectionObserver, scene, camera;
   let width = 0, height = 0, frame = 0, frames = 0, last = 0, time = 0, lost = false;
   let mouseX = 0, mouseY = 0, lookX = 0, lookY = 0, gestureTime = -1;
@@ -23,16 +25,25 @@ export function createOrbiAvatar(element, options = {}) {
   const listen = (target,event,handler) => { target.addEventListener(event,handler); removers.push(() => target.removeEventListener(event,handler)); };
   const animated = () => enabled && !reducedMotion;
   const visible = () => manuallyVisible && inViewport && !document.hidden;
-  const running = () => !destroyed && !lost && renderer && visible() && width > 0 && height > 0 && animated();
+  const running = () => !destroyed && !held && (playful || (!lost && renderer)) && visible() && width > 0 && height > 0 && animated();
   function draw(dt = 1, moving = false) {
-    if (!renderer || lost || destroyed || !width || !height) return;
+    if (destroyed || !width || !height) return;
+    const choreography = sampleLauncherMotion(time,playful && moving);
+    if (playful) {
+      // Move only the artwork. The button and its focus ring never chase Orbi.
+      const roll = choreography.roll + ((!renderer || lost) ? choreography.yaw*180/Math.PI : 0);
+      wrapper.style.transform = `translate3d(${choreography.x}%,${choreography.y}%,0) rotate(${roll}deg) scale(${choreography.scaleX},${choreography.scaleY})`;
+      shadow.style.transform = `scale(${choreography.shadowScale})`;
+      shadow.style.opacity = choreography.shadowOpacity;
+    }
+    if (!renderer || lost) { frames++; return; }
     const target = sampleExpression(state,time,moving);
     const ease = moving ? 1 - Math.exp(-dt * 10) : 1;
     for (const key in pose) pose[key] += (target[key] - pose[key]) * ease;
     lookX += ((moving ? mouseX : 0) - lookX) * ease; lookY += ((moving ? mouseY : 0) - lookY) * ease;
     let lift = 0;
     if (moving && gestureTime >= 0) { gestureTime += dt; lift = Math.sin(Math.min(1,gestureTime/1.2)*Math.PI)*.14; if (gestureTime >= 1.2) gestureTime = -1; }
-    model.update(pose,time,moving,lookX,lookY,lift);
+    model.update(pose,time,moving,lookX,lookY,lift,choreography.yaw);
     renderer.render(scene,camera); frames++;
     wrapper.dataset.renderer = 'webgl';
   }
@@ -46,12 +57,12 @@ export function createOrbiAvatar(element, options = {}) {
     if (destroyed) return;
     wrapper.dataset.motion = running() ? 'running' : 'paused';
     if (running()) frame = requestAnimationFrame(tick);
-    else if (visible()) draw();
+    else if (visible() && !held) draw();
   }
   function resize() {
-    if (!renderer || destroyed) return;
+    if (destroyed) return;
     const rect = element.getBoundingClientRect(); width = Math.round(rect.width); height = Math.round(rect.height);
-    if (width && height) {
+    if (renderer && width && height) {
       renderer.setSize(width,height,false); camera.aspect = width/height;
       camera.position.z = 6.35 * Math.max(1,1/camera.aspect); camera.updateProjectionMatrix();
     }
@@ -74,17 +85,23 @@ export function createOrbiAvatar(element, options = {}) {
     setState(value) { if (destroyed) return; state = ORBI_STATES.includes(value) ? value : 'idle'; wrapper.dataset.state = state; if (!running() && visible()) draw(); },
     setMotion(value) { if (destroyed) return; enabled = !!value; gestureTime = -1; sync(); },
     setVisible(value) { if (destroyed) return; manuallyVisible = !!value; sync(); },
+    setHeld(value) { if (destroyed) return; held = !!value; sync(); },
     playGesture(name = 'greet') { if (destroyed || !animated() || name !== 'greet') return; gestureTime = 0; },
     getStatus() { return { state, renderer: wrapper.dataset.renderer, motion: wrapper.dataset.motion, frames, destroyed }; },
     destroy() {
       if (destroyed) return; destroyed = true; cancelAnimationFrame(frame);
       resizeObserver?.disconnect(); intersectionObserver?.disconnect(); removers.forEach(fn=>fn());
       model?.dispose(); environment?.dispose(); renderer?.dispose(); renderer?.forceContextLoss();
-      wrapper.remove(); instances.delete(element);
+      wrapper.remove(); shadow?.remove(); instances.delete(element);
     },
   };
   instances.set(element,api); wrapper.dataset.state = state; wrapper.dataset.renderer = 'artwork'; wrapper.dataset.motion = 'paused';
-  if (renderMode === 'artwork') return api;
+  // Artwork fallback uses the same clock and visibility lifecycle as WebGL.
+  resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element);
+  intersectionObserver = new IntersectionObserver(entries => { inViewport = entries[0].isIntersecting; sync(); }); intersectionObserver.observe(element);
+  listen(document,'visibilitychange',sync);
+  listen(reduced,'change',event=>{reducedMotion=event.matches;sync();});
+  if (renderMode === 'artwork') { resize(); return api; }
   try {
     renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'low-power' });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1,compact ? 2 : 1.75));
@@ -96,10 +113,6 @@ export function createOrbiAvatar(element, options = {}) {
       const light = new THREE.DirectionalLight(color,intensity); light.position.set(x,y,z); scene.add(light);
     }
     model = createOrbiModel({compact}); scene.add(model.root); wrapper.append(canvas);
-    resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element);
-    intersectionObserver = new IntersectionObserver(entries => { inViewport = entries[0].isIntersecting; sync(); }); intersectionObserver.observe(element);
-    listen(document,'visibilitychange',sync);
-    listen(reduced,'change',event=>{reducedMotion=event.matches;sync();});
     listen(canvas,'webglcontextlost',e=>{ e.preventDefault(); lost=true; wrapper.dataset.renderer='artwork'; sync(); });
     listen(canvas,'webglcontextrestored',()=>{ lost=false; rebuildEnvironment(); resize(); });
     if (interactive) {
@@ -108,8 +121,8 @@ export function createOrbiAvatar(element, options = {}) {
     }
     resize();
   } catch (error) {
-    resizeObserver?.disconnect(); intersectionObserver?.disconnect(); removers.forEach(fn=>fn());
     model?.dispose(); environment?.dispose(); renderer?.dispose(); renderer = null; canvas.remove();
+    resize();
     options.onError?.(error);
   }
   return api;

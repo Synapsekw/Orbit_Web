@@ -7,12 +7,17 @@
   "services/360-walkthroughs/index.html",
   "services/time-lapse/index.html",
   "services/handover-media/index.html",
+  "services/visual-inspection/index.html",
+  "services/confined-space/index.html",
   "fleet/index.html",
   "about/index.html",
   "journal/index.html",
+  "journal/confined-space-drone-inspection-kuwait/index.html",
+  "journal/drone-surveying-kuwait-deliverables/index.html",
   "drones-in-construction-industry/index.html",
   "revolutionizing-construction-the-game-changing-benefits-of-drone-technology/index.html",
   "contact/index.html",
   "privacy/index.html",
-  "image-credits/index.html"
+  "image-credits/index.html",
+  "404.html"
 ]

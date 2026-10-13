@@ -3,7 +3,7 @@ import { articles } from './journal.generated.js';
 export { articles };
 export const company={name:'Orbit Aerials',email:'info@orbitaerials.com',phone:'+965 991 11 397',tel:'+96599111397',address:'Burj Al Tujjar, Kuwait City, Kuwait',hours:'Sunday–Thursday, 09:00–16:00',employee:'https://www.orbitaerials.com/log-in'};
 export const services=existingServices.map(s=>({...s,body:s.slug==='spatial-mapping'?'We bring aerial imagery and technical outputs together to help teams understand sites, assets and changing landscapes. The scope starts with what your team needs to compare, review or communicate.':s.body}));
-export const serviceChoices=[{slug:'help',name:'Help me choose'},{slug:'visual-inspection',name:'Visual asset inspection'},{slug:'confined-space',name:'Confined-space inspection'},...services];
+export const serviceChoices=[{slug:'help',name:'Help me choose'},...services];
 export const industries=[
  {id:'oil-gas',name:'Oil & gas',title:'Closer to the asset.',image:'oil-gas',alt:'Illustrative aerial view of refinery structures and storage tanks',need:'Understand visible asset conditions and the relationship between structures, access routes and operating areas.',capture:'External visual inspection and site documentation, with Elios 3 for suitable enclosed spaces. Thermal or specialist inspection is scoped around a confirmed payload.',receive:'Organised imagery, agreed coverage references and a visual record for review by your asset team.',discuss:'Asset type, inspection objective, access restrictions, operating conditions and the specialist interpretation you require.',services:['visual-inspection','confined-space','spatial-mapping']},
  {id:'construction',name:'Construction',title:'Every stage. In perspective.',image:'construction',alt:'Illustrative aerial photograph of a large concrete construction site',need:'Keep stakeholders connected to progress, understand the whole site and create a lasting record of the build.',capture:'Recurring aerial views, spatial capture, ground and aerial 360° viewpoints, time-lapse sequences and completion media.',receive:'Dated photography, edited updates, agreed mapping outputs, walkthroughs and handover films.',discuss:'The project programme, reporting dates, key viewpoints, accuracy requirements and the final audience.',services:['progress-documentation','spatial-mapping','360-walkthroughs','time-lapse','handover-media']},
@@ -19,16 +19,25 @@ export const fleet=[
 export const process=[['Define','Start with the asset, environment and decision you need to make.'],['Plan','Agree coverage, timing, access, equipment and useful deliverables.'],['Capture','Collect the agreed imagery or data with site coordination.'],['Deliver','Receive organised outputs prepared for the intended workflow.']];
 export const photoPath=name=>'/media/'+name+'.webp';
 export const enquiryHref=(service='help',industry='')=>'/contact/?'+new URLSearchParams({service,...(industry?{industry}:{})});
+const serviceTitles={
+ 'progress-documentation':'Construction Progress Monitoring in Kuwait',
+ 'spatial-mapping':'Drone Surveying & Aerial Mapping in Kuwait',
+ '360-walkthroughs':'360° Construction Walkthroughs in Kuwait',
+ 'time-lapse':'Construction Time-Lapse in Kuwait',
+ 'handover-media':'Aerial Photography & Handover Films in Kuwait',
+ 'visual-inspection':'Drone Visual Inspection in Kuwait',
+ 'confined-space':'Confined-Space Drone Inspection in Kuwait'
+};
 export const routes=[
- {path:'/',type:'home',title:'Perspective. Without limits.',description:'Drone inspection, mapping and visual documentation across oil and gas, construction, power, security and environment. Orbit Aerials, Kuwait.'},
- {path:'/industries/',type:'industries',title:'Different environments. A clearer perspective.',description:'Drone services for oil and gas, construction, power and infrastructure, security and the environment.'},
- {path:'/services/',type:'services',title:'Drone services',description:'Inspection, spatial mapping, progress documentation, 360° walkthroughs, time-lapse and handover media.'},
- ...services.map(s=>({path:'/services/'+s.slug+'/',type:'service',slug:s.slug,title:s.name,description:s.description})),
- {path:'/fleet/',type:'fleet',title:'Our fleet & technology',description:'Explore the DJI Matrice 400, Matrice 350 RTK and Flyability Elios 3 operated by Orbit Aerials.'},
- {path:'/about/',type:'about',title:'About Orbit',description:'Based in Kuwait City, Orbit Aerials brings a considered approach to drone inspection, mapping and visual documentation.'},
- {path:'/journal/',type:'journal',title:'The Orbit Journal',description:'Practical field notes on planning capture, understanding spatial views and telling the story of a project.'},
+ {path:'/',type:'home',title:'Drone Inspection & Surveying in Kuwait',description:'Orbit Aerials provides drone inspection, surveying, aerial mapping and construction documentation in Kuwait. Discuss your site, asset and required outputs.'},
+ {path:'/industries/',type:'industries',title:'Industrial Drone Services in Kuwait',description:'Explore drone services in Kuwait for oil and gas, construction, power, security and the environment, with capture planned around your site and intended use.'},
+ {path:'/services/',type:'services',title:'Drone Services in Kuwait',description:'Drone services in Kuwait: visual and confined-space inspection, aerial mapping, progress monitoring, 360° walkthroughs, time-lapse and handover films.'},
+ ...services.map(s=>({path:'/services/'+s.slug+'/',type:'service',slug:s.slug,title:serviceTitles[s.slug]||s.name+' in Kuwait',description:s.description})),
+ {path:'/fleet/',type:'fleet',title:'Drone Fleet & Inspection Technology in Kuwait',description:'Explore Orbit Aerials’ Kuwait drone fleet: DJI Matrice 400, Matrice 350 RTK and Flyability Elios 3 for agreed inspection, mapping and site capture scopes.'},
+ {path:'/about/',type:'about',title:'About Our Kuwait Drone Company',description:'Meet Orbit Aerials, based in Kuwait City. Learn how we plan drone inspection, aerial mapping and construction documentation around useful project outputs.'},
+ {path:'/journal/',type:'journal',title:'Drone Inspection & Construction Insights',description:'Read Orbit Aerials’ practical guides to drone inspection, surveying and construction documentation, with planning considerations for projects in Kuwait.'},
  ...articles.map(a=>({path:a.path,type:'article',slug:a.slug,title:a.seoTitle||a.title,description:a.description||a.summary})),
- {path:'/contact/',type:'contact',title:'Discuss a project',description:'Tell Orbit Aerials what you need to see. Prepare a project enquiry or contact our Kuwait City team.'},
+ {path:'/contact/',type:'contact',title:'Contact Our Drone Services Team in Kuwait',description:'Contact Orbit Aerials in Kuwait City to discuss drone inspection, surveying or construction capture. Share your site, timing and required deliverables.'},
  {path:'/privacy/',type:'privacy',title:'Privacy policy',description:'How Orbit Aerials handles information and how this website’s optional tools work.'},
  {path:'/image-credits/',type:'credits',title:'Image & model credits',description:'Sources, licences and context for the photographs, aircraft imagery and demonstration models on this website.'}
 ];

@@ -4,9 +4,12 @@ import {readFile} from 'node:fs/promises';
 import {loadArticles,parseArticle} from '../scripts/journal.mjs';
 import {articles} from '../src/site/journal.generated.js';
 test('recovered posts retain original paths; prototype drafts stay out of routes and feeds',async()=>{
- const all=await loadArticles();assert.equal(all.filter(a=>a.status==='draft').length,3);assert.equal(articles.length,2);
+ const all=await loadArticles();assert.equal(all.filter(a=>a.status==='draft').length,3);assert.equal(articles.length,4);
  const sitemap=await readFile('public/sitemap.xml','utf8'),feed=await readFile('public/journal.xml','utf8');
- for(const a of all){if(a.status==='draft'){assert.ok(!sitemap.includes(a.slug));assert.ok(!feed.includes(a.slug));}else{assert.equal(a.originalUrl.replace(/\/$/,''),'https://www.orbitaerials.com'+a.path.slice(0,-1));assert.ok(a.html.length>1000);assert.ok(a.toc.length>=5);assert.ok(sitemap.includes(a.path));}}
+ for(const a of all){if(a.status==='draft'){assert.ok(!sitemap.includes(a.slug));assert.ok(!feed.includes(a.slug));}else{assert.ok(a.html.length>1000);assert.ok(a.toc.length>=5);assert.ok(feed.includes(a.path));}}
+ const recovered=articles.filter(a=>a.originalUrl);assert.equal(recovered.length,2);
+ for(const a of recovered)assert.equal(a.originalUrl.replace(/\/$/,''),'https://www.orbitaerials.com'+a.path.slice(0,-1));
+ assert.deepEqual(recovered.map(a=>a.path).sort(),['/drones-in-construction-industry/','/revolutionizing-construction-the-game-changing-benefits-of-drone-technology/']);
  assert.match(await readFile('public/_redirects','utf8'),/wwworbitaerialscomdrone-construction-insights \/journal\/ 301/);
 });
 test('article authoring rejects invalid routes and renders script/unsafe links inert',async()=>{
@@ -25,6 +28,6 @@ test('article SEO matches visible content and includes images, source links and 
   assert.equal((html.match(/class="article-figure"/g)||[]).length,2);
   assert.match(html,/<meta property="og:image" content="https:\/\/www.orbitaerials.com\/media\//);
   assert.ok(a.description.length<165);assert.ok(!a.html.includes('60-fold'));assert.ok(!a.html.includes('80% over budget'));
-  assert.match(a.html,/href="\/services\//);assert.match(a.html,/href="https:\/\/enterprise-insights.dji.com\//);
+  assert.match(a.html,/href="\/services\//);assert.match(a.html,/href="https:\/\/(enterprise-insights\.dji\.com|www\.flyability\.com|support\.pix4d\.com)\//);
  }
 });

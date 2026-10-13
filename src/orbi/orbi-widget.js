@@ -1,4 +1,6 @@
+import {arrowIcon} from '../ui/icons.js';
 import { createOrbiAvatar } from './orbi-avatar.js';
+import {resolveOrbiMotion} from './orbi-motion.js';
 import { guideReply, normalizeAnswer, safeLink } from './orbi-guide.js';
 import styles from './orbi.css?inline';
 import {createContactFlow} from './orbi-contact.js';
@@ -30,11 +32,11 @@ export function mountOrbiWidget(options = {}) {
           <h3>What would you<br>like to capture?</h3>
           <p>I can help you explore Orbit’s services and find a good place to start.</p>
           <div class="orbi-prompts">
-            <button type="button" data-prompt="I need to document construction progress">Follow a project’s progress <span>↗</span></button>
-            <button type="button" data-prompt="Tell me about spatial mapping">Explore a site in 3D <span>↗</span></button>
-            <button type="button" data-prompt="I need a 360 walkthrough">Look inside a space <span>↗</span></button>
+            <button type="button" data-prompt="I need to document construction progress">Follow a project’s progress <span>${arrowIcon()}</span></button>
+            <button type="button" data-prompt="Tell me about spatial mapping">Explore a site in 3D <span>${arrowIcon()}</span></button>
+            <button type="button" data-prompt="I need a 360 walkthrough">Look inside a space <span>${arrowIcon()}</span></button>
           </div>
-          <a class="orbi-contact" href="/contact/">Talk to the team <span>↗</span></a>
+          <a class="orbi-contact" href="/contact/">Talk to the team <span>${arrowIcon()}</span></a>
         </section>
         <div class="orbi-messages" role="log" aria-label="Conversation with Orbi" aria-live="polite" aria-relevant="additions text"></div>
         <p class="orbi-thinking" role="status" hidden>Orbi is thinking<span aria-hidden="true">…</span></p>
@@ -45,7 +47,7 @@ export function mountOrbiWidget(options = {}) {
         <form class="orbi-form">
           <label class="orbi-sr-only" for="${id}-input">Ask Orbi</label>
           <textarea id="${id}-input" name="message" rows="1" maxlength="1000" placeholder="Ask Orbi…" required></textarea>
-          <button type="submit" aria-label="Send message" disabled>↑</button>
+          <button type="submit" aria-label="Send message" disabled>${arrowIcon('up')}</button>
         </form>
         <p class="orbi-disclosure"></p>
       </footer>
@@ -55,12 +57,18 @@ export function mountOrbiWidget(options = {}) {
   const launcher = $('.orbi-launcher'), panel = $('.orbi-panel'), input = $('textarea'), form = $('form'), send = form.querySelector('button');
   const welcome = $('.orbi-welcome'), messages = $('.orbi-messages'), scroll = $('.orbi-scroll'), thinking = $('.orbi-thinking'), notice = $('.orbi-notice'), reset = $('.orbi-reset');
   const motionToggle = $('.orbi-motion-toggle'), media = matchMedia('(max-width: 620px)'), reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let destroyed = false, opened = false, busy = false, motionEnabled = !!motion, generation = 0, controller, timeout, headerAvatar, lastFocus, history = [], pending;
+  let destroyed = false, opened = false, busy = false, motionEnabled = !!motion, motionAllowed = options.motionAllowed !== false, generation = 0, controller, timeout, headerAvatar, lastFocus, history = [], pending;
   let locked = false, previousOverflow, previousPriority, connected = !transport, connecting = false, contactBusy = false, callbacks = false;
   const cleanup = [];
   const on = (target,event,fn) => { target.addEventListener(event,fn); cleanup.push(()=>target.removeEventListener(event,fn)); };
-  const avatarOptions = {compact:true, interactive:true, motion:motionEnabled, fallbackUrl:assetBase+'orbi-icon.webp', renderMode};
-  const launcherAvatar = createOrbiAvatar($('.orbi-launcher__avatar'),avatarOptions);
+  const avatarOptions = {compact:true, interactive:true, motion:motionEnabled && motionAllowed, fallbackUrl:assetBase+'orbi-icon.webp', renderMode};
+  const launcherAvatar = createOrbiAvatar($('.orbi-launcher__avatar'),{...avatarOptions,playful:true,interactive:false});
+  let launcherHovered = false, launcherFocused = false;
+  const holdLauncher = () => launcherAvatar.setHeld(launcherHovered || launcherFocused);
+  on(launcher,'pointerenter',event=>{if(event.pointerType !== 'touch'){launcherHovered=true;holdLauncher();}});
+  on(launcher,'pointerleave',()=>{launcherHovered=false;holdLauncher();});
+  on(launcher,'focus',()=>{launcherFocused=true;holdLauncher();});
+  on(launcher,'blur',()=>{launcherFocused=false;holdLauncher();});
   const live = typeof respond === 'function';
   $('.orbi-mode').textContent = live ? 'AI assistant' : 'Local service guide';
   $('.orbi-disclosure').textContent = live
@@ -96,18 +104,20 @@ export function mountOrbiWidget(options = {}) {
   function decorate(article,answer){
     if(!transport)return;
     for(const id of [...new Set(Array.isArray(answer.source_ids)?answer.source_ids:[])].slice(0,3)){
-      const source=technicalSources[id];if(!source)continue;const a=document.createElement('a');a.textContent=source[0]+' ↗';a.href=source[1];a.target='_blank';a.rel='noopener noreferrer';a.className='orbi-source';article.append(a);
+      const source=technicalSources[id];if(!source)continue;const a=document.createElement('a');a.textContent=source[0]+' ';a.insertAdjacentHTML('beforeend',arrowIcon());a.href=source[1];a.target='_blank';a.rel='noopener noreferrer';a.className='orbi-source';article.append(a);
     }
     if(callbacks)contact.offer(answer.contact_request,article);
   }
 
   function syncMotion() {
-    const paused = !motionEnabled || reduced.matches;
+    const {active,locked,reason} = resolveOrbiMotion({enabled:motionEnabled,allowed:motionAllowed,reduced:reduced.matches});
+    const paused = !active;
+    launcherAvatar.setMotion(active); headerAvatar?.setMotion(active);
     motionToggle.textContent = paused ? '▷' : 'Ⅱ';
     motionToggle.setAttribute('aria-pressed',String(paused));
-    motionToggle.setAttribute('aria-label',reduced.matches ? 'Animation paused by reduced-motion preference' : paused ? 'Play Orbi animation' : 'Pause Orbi animation');
-    motionToggle.title = reduced.matches ? 'Your device prefers reduced motion' : paused ? 'Play animation' : 'Pause animation';
-    motionToggle.disabled = reduced.matches;
+    motionToggle.setAttribute('aria-label',reason === 'device' ? 'Animation paused by reduced-motion preference' : reason === 'page' ? 'Animation paused by page motion setting' : paused ? 'Play Orbi animation' : 'Pause Orbi animation');
+    motionToggle.title = reason === 'device' ? 'Your device prefers reduced motion' : reason === 'page' ? 'Resume motion using the page motion control' : paused ? 'Play animation' : 'Pause animation';
+    motionToggle.disabled = locked;
   }
   function lockBody(value) {
     if (value && !locked) {
@@ -126,7 +136,7 @@ export function mountOrbiWidget(options = {}) {
     lastFocus = shadow.activeElement || document.activeElement; opened = true;
     showDialog(); launcher.hidden = true; launcher.setAttribute('aria-expanded','true'); launcherAvatar.setVisible(false);
     headerAvatar ||= createOrbiAvatar($('.orbi-panel__avatar'),avatarOptions);
-    headerAvatar.setMotion(motionEnabled); headerAvatar.setVisible(true); headerAvatar.setState(busy?'thinking':'curious'); headerAvatar.playGesture();
+    syncMotion(); headerAvatar.setVisible(true); headerAvatar.setState(busy?'thinking':'curious'); headerAvatar.playGesture();
     $('.orbi-close').focus({preventScroll:true});
     if(transport&&!connected)connect();
   }
@@ -156,7 +166,7 @@ export function mountOrbiWidget(options = {}) {
     const p = document.createElement('p'); p.textContent = text; article.append(p);
     for (const link of links) {
       const href = mapped(link.href); if (!href) continue;
-      const a = document.createElement('a'); a.href = href; a.textContent = link.label+' ↗'; article.append(a);
+      const a = document.createElement('a'); a.href = href; a.textContent = link.label+' ';a.insertAdjacentHTML('beforeend',arrowIcon()); article.append(a);
     }
     messages.append(article);
     while (messages.children.length > 80) messages.firstElementChild.remove();
@@ -212,7 +222,7 @@ export function mountOrbiWidget(options = {}) {
   on(panel,'cancel',e=>{e.preventDefault();close();});
   on(document,'keydown',e=>{if(opened && e.key==='Escape'){e.preventDefault();close();}});
   on(media,'change',()=>{if(opened){const focused=shadow.activeElement;panel.close();showDialog();focused?.focus({preventScroll:true});}});
-  on(motionToggle,'click',()=>{motionEnabled=!motionEnabled;launcherAvatar.setMotion(motionEnabled);headerAvatar?.setMotion(motionEnabled);syncMotion();});
+  on(motionToggle,'click',()=>{motionEnabled=!motionEnabled;syncMotion();});
   on(reduced,'change',syncMotion);
   on(form,'submit',e=>{e.preventDefault();submit(input.value);});
   on(input,'keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();submit(input.value);}});
@@ -228,7 +238,8 @@ export function mountOrbiWidget(options = {}) {
   syncMotion(); syncControls();
   return {
     element:host, open, close, reset:resetConversation,
-    setMotion(value){if(destroyed)return;motionEnabled=!!value;launcherAvatar.setMotion(motionEnabled);headerAvatar?.setMotion(motionEnabled);syncMotion();},
+    setMotion(value){if(destroyed)return;motionEnabled=!!value;syncMotion();},
+    setMotionAllowed(value){if(destroyed)return;motionAllowed=!!value;syncMotion();},
     getStatus(){return {open:opened,busy,mode:live?'assistant':'guide',messages:history.length,destroyed};},
     destroy(){if(destroyed)return;close();cancelPending();destroyed=true;cleanup.forEach(fn=>fn());launcherAvatar.destroy();headerAvatar?.destroy();host.remove();history=[];pending=null;},
   };
