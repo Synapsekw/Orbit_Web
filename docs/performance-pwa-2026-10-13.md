@@ -36,6 +36,14 @@ npx --yes lighthouse@13.5.0 http://127.0.0.1:4174/ --chrome-flags='--headless --
 
 Full reports and traces are local diagnostic artifacts under `.local/`; do not publish the whole diagnostic directory. Scores are lab observations, not guarantees for every phone or network.
 
+### Hosted PR preview
+
+The Netlify deploy for commit `8d522e8` passed GitHub validation and deployment. A full Lighthouse 13.5.0 run on the default preview URL scored 69 performance and 96 best practices. Its trace included Netlify's injected review drawer, analytics, and three onboarding videos; its cookie issue belonged to that drawer. Initial document response was also slower in this run (1.43s). Those preview-only resources do not appear in the production baseline.
+
+The same deployed code, using the drawer's own `?ntl-drawer-state=hidden` option, scored **97 performance, 100 accessibility and 100 best practices**, with no run warnings. FCP was 1.20s, LCP 2.03s, TBT 18.5ms and CLS 0.000113. Network evidence confirmed the Netlify drawer was not loaded. No Orbit component, animation or request was suppressed. This is a preview result with review tooling excluded, not a measured post-merge production result. Both preview URLs correctly scored 69 SEO because `noindex` is required there.
+
+Preview tested: `https://deploy-preview-4--orbitaerials.netlify.app/?ntl-drawer-state=hidden`. Reports: `.local/lighthouse-netlify-final.report.json` and `.local/lighthouse-netlify-without-review-drawer.report.json`. HTTP checks also confirmed the worker, manifest, offline document, favicon and baked lighting were served successfully with their expected content types and cache headers.
+
 ## PWA and favicon
 
 Lighthouse 9.6.8, the version in the supplied report, passed all eight weighted PWA checks in the local production preview: installable manifest, controlling service worker, splash screen, theme color, viewport sizing, viewport meta tag, Apple touch icon and maskable icon. The completed report had no audit warnings. Its old Chrome launcher then reported a Windows temporary-profile cleanup error; the audit results were already written successfully.
