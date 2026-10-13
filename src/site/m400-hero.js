@@ -3,6 +3,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {aircraftPose,scrollProgress} from './aircraft-motion.js';
 import {advanceFlight,flightOffset,rotorAngle} from './m400-flight.js';
+import {loadAircraftEdges} from './aircraft-edges.js';
 
 export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/models/m400-flight.json',standalone=false,onReady=()=>{},onError=()=>{}}={}){
  const stage=hero.querySelector('.aircraft-presentation'),target=document.createElement('div');
@@ -20,9 +21,7 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
   const results=await Promise.allSettled([
    loader.loadAsync(metadata.model).then(model=>gltf=model),
    ...metadata.parts.map(async part=>{
-    const response=await fetch(part.edges);if(!response.ok)throw Error('Edges unavailable');
-    const packed=new Uint16Array(await response.arrayBuffer()),positions=new Float32Array(packed.length);
-    packed.forEach((v,i)=>{const [lo,hi]=part.bounds[i%3];positions[i]=lo+v/65535*(hi-lo);});
+    const positions=await loadAircraftEdges(part);
     const geometry=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(positions,3));lineGeometries.push(geometry);part.geometry=geometry;
    })
   ]);
@@ -48,7 +47,7 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
  const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',name+' 3D wireframe. Drag horizontally to rotate. Arrow keys rotate, plus or minus zoom, Home resets.');canvas.style.touchAction='pan-y';target.append(canvas);
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  let selected=false,visible=true,modal=false,disposed=false,failed=false,frame=0,width=1,height=1,drag=null;
- let flight={aircraft:0,rotors:0},lastPaint=0,inspectUntil=0,scrollT=0,painted=false;
+ let flight={aircraft:0,rotors:0},lastPaint=0,inspectUntil=0,scrollT=0,painted=false,scrollDirty=true;
  const manual={yaw:0,pitch:0,scale:1};let current=aircraftPose(0,manual,false);
  function canAnimate(){return !reduced.matches&&!document.body.classList.contains('motion-paused');}
  function active(){return !disposed&&visible&&selected&&!document.hidden&&!modal;}
@@ -60,7 +59,7 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
   // Keep phone GPU work to 30 fps while retaining real elapsed-time animation.
   if(motion&&width<500&&lastPaint&&delta<1/30-.001){schedule();return;}
   lastPaint=stamp;flight=advanceFlight(flight,delta,motion,Boolean(drag)||stamp<inspectUntil);
-  const rect=hero.getBoundingClientRect();if(motion&&!standalone)scrollT=scrollProgress(rect.top,rect.height);
+  if(scrollDirty&&motion&&!standalone){const rect=hero.getBoundingClientRect();scrollT=scrollProgress(rect.top,rect.height);scrollDirty=false;}
   const pose=aircraftPose(scrollT,manual,true),offset=flightOffset(flight.aircraft);let moving=false;
   const ease=motion?1-Math.exp(-12*Math.min(delta||1/60,.05)):1;
   for(const key of Object.keys(pose)){const d=pose[key]-current[key];current[key]+=d*ease;if(Math.abs(d)>.0005)moving=true;}
@@ -68,7 +67,7 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
   rotors.forEach(({node,axis,direction})=>node.quaternion.setFromAxisAngle(axis,rotorAngle(flight.rotors,direction)));
   renderer.render(scene,camera);if(!painted){painted=true;onReady();}if(motion||moving)schedule();
  }
- function resize(){const r=target.getBoundingClientRect();if(!r.width||!r.height)return;width=r.width;height=r.height;renderer.setSize(width,height);camera.aspect=width/height;camera.position.z=width<500?8:7;camera.updateProjectionMatrix();schedule();}
+ function resize(){scrollDirty=true;const r=target.getBoundingClientRect();if(!r.width||!r.height)return;width=r.width;height=r.height;renderer.setSize(width,height);camera.aspect=width/height;camera.position.z=width<500?8:7;camera.updateProjectionMatrix();schedule();}
  function action(a){inspectUntil=performance.now()+3000;if(a==='left')manual.yaw-=.2;if(a==='right')manual.yaw+=.2;if(a==='up')manual.pitch=Math.min(.9,manual.pitch+.12);if(a==='down')manual.pitch=Math.max(-.6,manual.pitch-.12);if(a==='in')manual.scale=Math.min(1.5,manual.scale+.1);if(a==='out')manual.scale=Math.max(.65,manual.scale-.1);if(a==='reset'){Object.assign(manual,{yaw:0,pitch:0,scale:1});flight.aircraft=0;}schedule();}
  const key=e=>{const a={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down','+':'in','=':'in','-':'out',Home:'reset'}[e.key];if(a){e.preventDefault();action(a);}};canvas.addEventListener('keydown',key);
  canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={id:e.pointerId,x:e.clientX};canvas.setPointerCapture(e.pointerId);canvas.classList.add('is-dragging');});
@@ -81,11 +80,12 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
  const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(target);
  const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;schedule();});observer.observe(stage);
  const modalOpen=()=>{modal=true;stop();},modalClose=()=>{modal=false;schedule();};
- addEventListener('scroll',schedule,{passive:true});document.addEventListener('visibilitychange',schedule);document.addEventListener('orbit-motion',schedule);document.addEventListener('orbit-viewer-open',modalOpen);document.addEventListener('orbit-viewer-close',modalClose);reduced.addEventListener('change',schedule);
+ const scroll=()=>{scrollDirty=true;schedule();};
+ addEventListener('scroll',scroll,{passive:true});document.addEventListener('visibilitychange',schedule);document.addEventListener('orbit-motion',schedule);document.addEventListener('orbit-viewer-open',modalOpen);document.addEventListener('orbit-viewer-close',modalClose);reduced.addEventListener('change',schedule);
  function fallback(){failed=true;selected=false;stop();target.hidden=true;stage.classList.remove('has-'+id+'-model');onError();if(stage.dataset.platform===id)note.textContent='3D is unavailable on this device. Aircraft reference shown.';}
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fallback();});
  select();
- function destroy(){disposed=true;stop();mutation.disconnect();resizeObserver.disconnect();observer.disconnect();removeEventListener('scroll',schedule);document.removeEventListener('visibilitychange',schedule);document.removeEventListener('orbit-motion',schedule);document.removeEventListener('orbit-viewer-open',modalOpen);document.removeEventListener('orbit-viewer-close',modalClose);reduced.removeEventListener('change',schedule);controls.removeEventListener('click',click,true);surfaceMeshes.forEach(o=>o.geometry.dispose());surfaceMaterial.dispose();lineGeometries.forEach(g=>g.dispose());lineMaterial.dispose();renderer.dispose();target.remove();}
+ function destroy(){disposed=true;stop();mutation.disconnect();resizeObserver.disconnect();observer.disconnect();removeEventListener('scroll',scroll);document.removeEventListener('visibilitychange',schedule);document.removeEventListener('orbit-motion',schedule);document.removeEventListener('orbit-viewer-open',modalOpen);document.removeEventListener('orbit-viewer-close',modalClose);reduced.removeEventListener('change',schedule);controls.removeEventListener('click',click,true);surfaceMeshes.forEach(o=>o.geometry.dispose());surfaceMaterial.dispose();lineGeometries.forEach(g=>g.dispose());lineMaterial.dispose();renderer.dispose();target.remove();}
  addEventListener('pagehide',e=>{if(!e.persisted)destroy();},{once:true});
  return {destroy};
 }

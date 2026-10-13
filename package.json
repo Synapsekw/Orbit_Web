@@ -11,8 +11,9 @@
     "prepare:scan": "node scripts/prepare-scan.mjs",
     "pages": "node scripts/journal.mjs && node scripts/build-site.mjs && node scripts/build-orbi-knowledge.mjs",
     "prepare:media": "node scripts/prepare-site-media.mjs",
-    "prebuild": "npm run pages",
-    "predev": "npm run pages",
+    "prepare:startup": "node scripts/prepare-startup-assets.mjs",
+    "prebuild": "npm run pages && npm run prepare:startup",
+    "predev": "npm run pages && npm run prepare:startup",
     "check:public": "node scripts/check-public.mjs",
     "check:repo": "node scripts/check-repository.mjs"
   },

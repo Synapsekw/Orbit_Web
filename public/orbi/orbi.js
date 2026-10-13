@@ -11926,7 +11926,7 @@ function dc(e = 0, t = !0) {
 //#endregion
 //#region src/orbi/orbi-environment.js
 var fc = /* @__PURE__ */ new Map();
-async function pc(e = "/orbi/orbi-studio-cubeuv.png") {
+async function pc(e = "/orbi/orbi-studio-cubeuv.webp") {
 	fc.has(e) || fc.set(e, new ei().loadAsync(e).catch((t) => {
 		throw fc.delete(e), t;
 	}));
@@ -11939,7 +11939,7 @@ var mc = /* @__PURE__ */ new WeakMap();
 function hc(e, t = {}) {
 	if (!(e instanceof HTMLElement)) throw TypeError("Orbi needs an HTML element.");
 	if (mc.has(e)) return mc.get(e);
-	let { compact: n = !1, interactive: r = !0, playful: i = !1, fallbackUrl: a = "/orbi/orbi-fallback.webp", environmentUrl: o = "/orbi/orbi-studio-cubeuv.png", motion: s = !0, renderMode: c = "auto" } = t, l = document.createElement("span");
+	let { compact: n = !1, interactive: r = !0, playful: i = !1, fallbackUrl: a = "/orbi/orbi-fallback.webp", environmentUrl: o = "/orbi/orbi-studio-cubeuv.webp", motion: s = !0, renderMode: c = "auto" } = t, l = document.createElement("span");
 	l.className = "orbi-avatar", l.setAttribute("aria-hidden", "true");
 	let u = document.createElement("img");
 	u.className = "orbi-avatar__fallback", u.src = a, u.alt = "", u.decoding = "async", u.draggable = !1;
@@ -12382,8 +12382,8 @@ function Tc(e = {}) {
 		compact: !0,
 		interactive: !0,
 		motion: N && P,
-		fallbackUrl: s + "orbi-icon.webp",
-		environmentUrl: s + "orbi-studio-cubeuv.png",
+		fallbackUrl: s + "orbi-launcher.webp",
+		environmentUrl: s + "orbi-studio-cubeuv.webp",
 		renderMode: l
 	}, ce = hc(h(".orbi-launcher__avatar"), {
 		...U,

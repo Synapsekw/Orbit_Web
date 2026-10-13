@@ -9,7 +9,7 @@ const instances = new WeakMap();
 export function createOrbiAvatar(element, options = {}) {
   if (!(element instanceof HTMLElement)) throw new TypeError('Orbi needs an HTML element.');
   if (instances.has(element)) return instances.get(element);
-  const { compact = false, interactive = true, playful = false, fallbackUrl = '/orbi/orbi-fallback.webp', environmentUrl = '/orbi/orbi-studio-cubeuv.png', motion = true, renderMode = 'auto' } = options;
+  const { compact = false, interactive = true, playful = false, fallbackUrl = '/orbi/orbi-fallback.webp', environmentUrl = '/orbi/orbi-studio-cubeuv.webp', motion = true, renderMode = 'auto' } = options;
   const wrapper = document.createElement('span'); wrapper.className = 'orbi-avatar'; wrapper.setAttribute('aria-hidden','true');
   const img = document.createElement('img'); img.className = 'orbi-avatar__fallback'; img.src = fallbackUrl; img.alt = ''; img.decoding = 'async'; img.draggable = false;
   const canvas = document.createElement('canvas'); canvas.className = 'orbi-avatar__canvas';
