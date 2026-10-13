@@ -5,6 +5,9 @@
 
 [build.environment]
   NODE_VERSION = "24"
+  # Public defaults can be misclassified as secrets during .env import.
+  # Keep scanning enabled for OpenAI, Grok and ORBI_SESSION_SECRET.
+  SECRETS_SCAN_OMIT_KEYS = "ORBI_ALLOWED_ORIGINS,ORBI_MODEL,ORBI_PROVIDER_ENDPOINT,ORBI_REASONING_EFFORT,ORBI_TOKEN_PARAMETER,ORBI_OUTPUT_TOKENS"
 
 [functions]
   node_bundler = "esbuild"
