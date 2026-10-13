@@ -1,0 +1,15 @@
+.compare-controls{display:flex;align-items:center;gap:28px}.compare-controls button{background:none;border:1px solid #8b774e;font:11px/1.5 'Manrope',Arial,sans-serif;padding:9px 14px;color:inherit;white-space:nowrap}
+html[data-mode=dark] body{background:#07182b;color:#f3f4f5}
+html[data-mode=dark] header img{filter:none}
+html[data-mode=dark] header,html[data-mode=dark] .tabs,html[data-mode=dark] .included,html[data-mode=dark] footer{border-color:#2b4058}
+html[data-mode=dark] .intro>p,html[data-mode=dark] .study-copy,html[data-mode=dark] .included p,html[data-mode=dark] footer,html[data-mode=dark] .study-head p,html[data-mode=dark] header p,html[data-mode=dark] .tabs span{color:#a8b6c8}
+html[data-mode=dark] .kicker,html[data-mode=dark] .study-head>span{color:#d6b56d}
+html[data-mode=dark] .tabs button{color:#a8b6c8}
+html[data-mode=dark] .tabs button[aria-pressed=true]{color:#d6b56d;border-color:#d6b56d}
+html[data-mode=dark] .screenshot{background:#0d2239;border-color:#2b4058}
+html[data-mode=dark] .full-page{color:#d6b56d;border-color:#8b774e}
+html[data-mode=dark] .open-site{background:#d6b56d;color:#07182b}
+html[data-mode=dark] dialog,html[data-mode=dark] .dialog-head{background:#0d2239;color:#f3f4f5;border-color:#415976}
+html[data-mode=dark] .dialog-head button{color:#d6b56d;border-color:#8b774e}
+html[data-mode=dark] a:focus-visible,html[data-mode=dark] button:focus-visible{outline-color:#d6b56d}
+@media(max-width:720px){.compare-controls{gap:14px}.compare-controls>p{display:none}.compare-controls button{font-size:10px}}

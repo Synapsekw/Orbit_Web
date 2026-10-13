@@ -1,0 +1,42 @@
+.main-site{padding-bottom:0}
+.customers-section{display:grid;grid-template-columns:180px minmax(0,1fr);align-items:center;gap:35px;padding:38px var(--pad) 44px;margin-inline:calc(-1 * var(--pad));background:#07182b;color:#f3f4f5;border-top:1px solid #2b4058}
+.customers-heading .micro{display:block;color:#d6b56d;font-size:9px;letter-spacing:.15em;margin-bottom:12px}
+.customers-heading h2{font-size:25px;font-weight:400;letter-spacing:-.045em}
+.customer-logos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px;align-items:center;margin:0;padding:0;list-style:none}
+.customer-logo{min-width:0;min-height:106px;display:flex;align-items:center;justify-content:center;padding:12px}
+.customer-logo img{display:block;width:100%;height:auto;max-width:185px;max-height:76px;object-fit:contain;filter:brightness(0) invert(1);background:transparent}
+.customer-logo--sinohydro img{max-width:192px}
+.customer-logo-filters{position:absolute;pointer-events:none}
+.customer-logo--ugcc img{max-width:182px;filter:url(#customer-ugcc-white)}
+.customer-logo--bay-zero img{max-width:100px}
+.customer-logo--future-kid img{max-width:182px;filter:url(#customer-future-kid-white)}
+@media(max-width:1050px){.customers-section{grid-template-columns:1fr;gap:15px;padding-block:30px 36px}.customers-heading{display:flex;justify-content:space-between;align-items:center;gap:20px}.customers-heading .micro{margin:0}.customers-heading h2{font-size:23px}.customer-logos{gap:20px}}
+@media(max-width:600px){.customers-section{padding-block:29px 32px;gap:18px}.customers-heading h2{font-size:21px}.customer-logos{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px}.customer-logo{min-height:92px;padding:12px 9px}.customer-logo img{max-height:62px}.customer-logo--bay-zero img{max-width:88px}}
+.scene-actions{position:absolute;right:0;bottom:13px;display:flex;gap:8px;z-index:2}
+.scene-actions .reset-view{position:static}
+.rotation-toggle{background:var(--paper);border:1px solid var(--line);color:var(--accent);font-size:10px;padding:8px 10px}
+.panorama-plate{min-width:0;width:100%;background:var(--wash);border:1px solid var(--line)}
+.panorama-header,.panorama-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 20px}
+.panorama-header .micro{color:var(--accent)}
+.panorama-header>span:last-child{font-size:10px;color:var(--muted)}
+.panorama-stage{height:clamp(310px,36vw,590px);position:relative;background:#102740}
+.panorama-view{position:absolute;inset:0;overflow:hidden}
+.panorama-view canvas{display:block;touch-action:none}
+.panorama-view canvas:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
+.panorama-status{position:absolute;inset:0;display:grid;place-content:center;padding:25px;text-align:center;color:#f3f4f5;background:#102740;font-size:13px;pointer-events:none}
+.panorama-footer{flex-wrap:wrap;border-top:1px solid var(--line)}
+.panorama-footer p{margin:0;font-size:10px;color:var(--muted)}
+.panorama-buttons{display:flex;gap:8px;align-items:center}
+.panorama-buttons button{background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 12px;font-size:11px;min-height:38px}
+.panorama-buttons button:hover{color:var(--accent);border-color:var(--accent)}
+.panorama-plate>figcaption{padding:0 20px 15px;display:block;font-size:9px}
+.service-expanded .panorama-stage,.chapter-detail .panorama-stage{height:330px}
+.service-expanded .panorama-header,.chapter-detail .panorama-header{padding:13px 16px}
+.service-expanded .panorama-header>span:last-child,.chapter-detail .panorama-header>span:last-child{display:none}
+.service-expanded .panorama-footer,.chapter-detail .panorama-footer{padding:12px 16px}
+.service-expanded .panorama-footer>p,.chapter-detail .panorama-footer>p{display:none}
+.service-expanded .panorama-plate>figcaption,.chapter-detail .panorama-plate>figcaption{padding:0 16px 12px;font-size:8px}
+.panorama-plate:fullscreen{height:100dvh;display:flex;flex-direction:column;background:var(--paper);padding:20px;overflow:auto}
+.panorama-plate:fullscreen .panorama-stage{height:auto;min-height:200px;flex:1}
+.panorama-plate:fullscreen .panorama-header>span:last-child,.panorama-plate:fullscreen .panorama-footer>p{display:block}
+@media(max-width:700px){.scene-actions{bottom:10px;gap:5px}.scene-actions button{font-size:9px;padding:6px 8px}.model-hint{bottom:49px}.panorama-header,.panorama-footer{padding:13px 15px}.panorama-header>span:last-child{display:none}.panorama-stage{height:380px}.panorama-footer>p{font-size:9px}.panorama-buttons{gap:6px}.panorama-buttons button{font-size:10px;padding:8px 10px}.panorama-plate>figcaption{padding:0 15px 14px;font-size:8px}.panorama-plate:fullscreen{padding:0}}

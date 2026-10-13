@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.playwright-mcp/
+assets-source/
+
+.env
+.env.*
+!.env.example
+*.local.json
+.netlify/
+.local/
+
+# Local captures, editorial briefs, and rendered design-review artifacts.
+*.log
+__pycache__/
+*.pyc
+/docs/*.png
+/docs/*.jpg
+/docs/*.jpeg
+/docs/*.txt
+/design-concepts/**/*.png
+/design-concepts/**/*.jpg
+/design-concepts/**/*.jpeg
+/design-concepts/**/*.zip

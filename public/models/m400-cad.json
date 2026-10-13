@@ -1,0 +1,24 @@
+{
+  "segments": 56636,
+  "sourceEdges": 93345,
+  "failedEdges": 0,
+  "bounds": [
+    [
+      -746.8839721679688,
+      746.8839721679688
+    ],
+    [
+      -228.74917602539062,
+      254.20367431640625
+    ],
+    [
+      -433.3572998046875,
+      504.8682861328125
+    ]
+  ],
+  "seconds": 34.8,
+  "source": "https://enterprise.dji.com/matrice-400/downloads",
+  "model": "/models/m400-cad.glb",
+  "edges": "/models/m400-edges.bin",
+  "rights": "Manufacturer CAD; local evaluation. Public redistribution permission remains to be confirmed."
+}

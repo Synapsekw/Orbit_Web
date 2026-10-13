@@ -1,0 +1,21 @@
+{
+  "version": "1.0.1",
+  "verifiedOn": "2026-10-12",
+  "status": "Ready for website integration",
+  "approvedDesign": "Option 2 — Halo Companion",
+  "visualRevision": "Broader sculpted silver ribbons with continuous organic curves, a diagonal front sweep, and stronger warm eye halos, matched more closely to the approved artwork",
+  "visualReview": "Desktop hero, mobile widget, and all eight expressions inspected",
+  "liveAIConnected": false,
+  "defaultMode": "Prepared local service guide; no message transmission",
+  "build": { "command": "node scripts/build-orbi.mjs", "result": "pass" },
+  "unitTests": { "command": "npm test", "passed": 11, "failed": 0 },
+  "browserChecks": { "command": "node tests/orbi-browser.mjs", "passed": 32, "javascriptErrors": 0 },
+  "regressions": { "command": "node tests/orbi-regressions.mjs", "passed": 3, "failed": 0 },
+  "reviewFixes": [
+    "Delayed replies do not steal focus from the host page",
+    "WebGL restoration regenerates studio lighting",
+    "Dynamic reduced-motion changes update status and resume correctly",
+    "Mobile launcher honors the host bottom-offset override"
+  ],
+  "siteIntegrationOwner": "Explore Orbital Aerials redesigns"
+}

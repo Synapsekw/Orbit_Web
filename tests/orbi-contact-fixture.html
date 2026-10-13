@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Orbi contact recovery checks</title>
+<style>body{font:16px system-ui;padding:32px;background:#091727;color:#eee}button,input,textarea{font:inherit}#fixtures{position:absolute;left:0;top:200px}pre{white-space:pre-wrap}</style>
+<h1>Orbi contact recovery checks</h1>
+<p>Development fixture. All transport responses are simulated; no external messages.</p>
+<button id="run">Run recovery checks</button><pre id="results" role="status"></pre><div id="fixtures"></div>
+<script type="module">
+import {createContactFlow} from '../src/orbi/orbi-contact.js';
+import {mountOrbiWidget} from '../src/orbi/orbi-widget.js';
+import {createOrbiClient} from '../src/orbi/orbi-client.js';
+const results=document.querySelector('#results'),fixtures=document.querySelector('#fixtures');
+const assert=(value,message)=>{if(!value)throw new Error(message);};
+const settle=()=>new Promise(r=>setTimeout(r,20));
+const find=(root,label)=>[...root.querySelectorAll('button')].find(b=>b.textContent===label);
+const lead={name:'Test visitor',email:'visitor@example.com',reason:'Test inspection enquiry'};
+function review(root){const form=root.querySelector('.orbi-contact-form');form.requestSubmit();const check=root.querySelector('input[type=checkbox]');check.checked=true;check.dispatchEvent(new Event('change'));find(root,'Confirm & send').click();}
+document.querySelector('#run').onclick=async()=>{
+ results.textContent='';fixtures.replaceChildren();
+ async function scenario(name,fn){try{await fn();results.textContent+='PASS '+name+'\n';}catch(e){results.textContent+='FAIL '+name+': '+e.message+'\n';}finally{fixtures.replaceChildren();}}
+ await scenario('A lost response keeps the same enquiry when the form is reopened',async()=>{
+  const scroller=document.createElement('div');fixtures.append(scroller);const sent=[];
+  const flow=createContactFlow({scroller,setBusy(){},onChange(){},request:async(action,body)=>{sent.push(body);if(sent.length===1)throw new Error('Connection lost');return {delivery:'accepted',reply:'Fixture accepted',reference:'fixture'};}});
+  flow.setReady(true);flow.open(lead);review(scroller);await settle();flow.open({name:'Different visitor'});
+  const retry=find(scroller,'Check / retry request');assert(retry,'Reopening replaced the unresolved enquiry with a fresh form');retry.click();await settle();
+  assert(sent.length===2&&sent[0].request_id===sent[1].request_id,'Retry changed the request ID');
+  assert(JSON.stringify(sent[0].lead)===JSON.stringify(sent[1].lead),'Retry changed the reviewed details');
+ });
+ await scenario('Restoring a fresh session removes a stale contact form',async()=>{
+  const scroller=document.createElement('div');fixtures.append(scroller);
+  const flow=createContactFlow({scroller,setBusy(){},onChange(){},request:async()=>({})});flow.setReady(true);flow.open(lead);flow.restore(null);
+  assert(!flow.visible,'The previous session contact form remains visible');
+ });
+ await scenario('An expired contact request gives the visitor a working reconnect action',async()=>{
+  let expired=false;
+  const transport=createOrbiClient({fetch:async url=>url.includes('status')?Response.json({mode:'live',token:'fixture',callbacks_enabled:true,history:[]}):expired?Response.json({error:'Session expired'},{status:403}):Response.json({})});
+  const widget=mountOrbiWidget({container:fixtures,transport,renderMode:'artwork'});
+  try{
+   widget.open();await settle();const root=widget.element.shadowRoot;find(root,'Contact the team').click();
+   const form=root.querySelector('.orbi-contact-form');for(const [key,value]of Object.entries(lead))form.elements[key].value=value;
+   expired=true;review(root);await settle();
+   const reconnect=find(root,'Reconnect');assert(reconnect&&!reconnect.closest('[hidden]'),'No reconnect action after the enquiry session expires');
+   reconnect.click();await settle();assert(!root.querySelector('textarea[name=message]').readOnly,'Chat remains locked after reconnect');
+   assert(root.querySelector('section.orbi-contact').hidden,'An old contact request survived the new session');
+  }finally{widget.destroy();}
+ });
+};
+</script></html>

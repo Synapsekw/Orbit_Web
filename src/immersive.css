@@ -1,0 +1,58 @@
+/* An edge-to-edge spatial stage, with the interface kept at its perimeter. */
+.site-header{max-width:none;padding:24px 42px;height:90px;position:relative;z-index:5}
+.hero{max-width:none;min-height:calc(100svh - 90px);position:relative;isolation:isolate;overflow:hidden}
+.hero-intro{position:absolute;left:42px;top:26px;padding:0;text-align:left;z-index:2;pointer-events:none}
+.hero-intro h1{font-size:clamp(42px,4.3vw,68px);line-height:1.08;letter-spacing:-.055em}
+.hero-intro p{font-size:13px;margin:18px 0 0;color:#a9afb9}
+.hero-intro .eyebrow{display:block;margin-bottom:17px;font-size:9px;color:#8493a7}
+.scene-wrap{position:absolute;inset:0;height:auto;margin:0;z-index:0}
+.scene-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#191c2140 0%,transparent 22%,transparent 79%,#191c21d9 100%)}
+.scene-caption{left:auto;right:42px;top:93px;text-align:right;z-index:2}
+.scene-caption span:first-child{font-size:9px;color:#9faab9}
+.scene-caption span:last-child{color:#788597}
+.view-picker{position:absolute;right:42px;top:28px;margin:0;z-index:3;background:#202329e6;backdrop-filter:blur(12px)}
+.view-picker button{font-size:12px;padding:10px 17px;white-space:nowrap}
+.scene-actions{top:50%;right:28px;flex-direction:column;z-index:3;gap:6px;background:#202329aa;border:1px solid #ffffff10;padding:7px;border-radius:30px;backdrop-filter:blur(10px)}
+.scene-actions button{width:32px;height:32px;border-radius:50%;color:#a9b5c7}
+.scene-actions #reset-view{border-left:0;border-top:1px solid #ffffff15;border-radius:0;margin:3px 0 0;padding:10px 0 3px;font-size:9px;height:34px}
+.explorer-footer{position:absolute;left:42px;right:42px;bottom:27px;z-index:3;margin:0;padding:23px 0 0;grid-template-columns:1fr 390px;gap:60px;align-items:end;isolation:isolate}
+.explorer-footer::before{content:'';position:absolute;inset:-28px -42px -28px;z-index:-1;pointer-events:none;background:linear-gradient(0deg,#191c21 0%,#191c21f7 65%,#191c2100 100%)}
+.view-description h2{font-size:23px;margin-bottom:8px}
+.view-description p{font-size:12px;max-width:470px;color:#9ca5b3}
+.range-title{font-size:11px;margin-bottom:16px}
+.range-labels{margin-top:13px}
+.gesture-hint{left:auto;right:42px;bottom:153px;transform:none;font-size:10px;z-index:2}
+.height-key{right:103px;bottom:195px;z-index:2}
+.compare-guide{top:24%;bottom:20%;z-index:2}
+.compare-guide span{width:30px;height:30px;line-height:28px;background:#1d222bdd;border-color:#b8c9e54d}
+.scene-loading{z-index:4;background:#191c21b3;backdrop-filter:blur(12px)}
+.services-section{margin-top:0;padding-top:85px}
+@media(min-width:1800px){.hero-intro{left:60px;top:40px}.site-header{padding-left:60px;padding-right:60px}.view-picker,.scene-caption{right:60px}.explorer-footer{left:60px;right:60px;bottom:35px}}
+@media(max-width:900px){
+  .site-header{height:80px;padding:22px 28px}.hero{min-height:calc(100svh - 80px)}
+  .hero-intro{left:28px;top:27px}.hero-intro h1{font-size:48px}.hero-intro p{font-size:12px}
+  .view-picker{right:28px;top:35px}.view-picker button{padding:9px 11px;font-size:10px}
+  .scene-caption{right:28px;top:95px}.explorer-footer{left:28px;right:28px;grid-template-columns:1fr 300px;gap:30px}
+  .view-description h2{font-size:20px}.view-description p{font-size:11px}
+  .scene-actions{right:17px}.gesture-hint{right:28px;bottom:157px}
+}
+@media(max-width:650px){
+  .site-header{height:75px;padding:22px}.hero{min-height:740px;min-height:max(740px,calc(100svh - 75px))}
+  .hero-intro{left:22px;top:22px}.hero-intro .eyebrow{font-size:8px;margin-bottom:14px}
+  .hero-intro h1{font-size:43px}.hero-intro p{font-size:11px;margin-top:15px}
+  .scene-wrap{inset:0;height:auto;margin:0}
+  .scene-caption{left:22px;right:auto;top:205px;text-align:left}.scene-caption span:first-child{font-size:8px}
+  .scene-caption span:last-child{font-size:9px}
+  .view-picker{top:auto;bottom:143px;left:22px;right:22px;max-width:none;width:auto;display:grid;grid-template-columns:1.45fr 1.1fr .6fr;padding:5px;gap:0}
+  .view-picker button{font-size:10px;padding:10px 8px;min-height:40px;justify-content:center;gap:6px}
+  .scene-actions{top:210px;right:16px;gap:2px;padding:5px}
+  .scene-actions button{width:30px;height:30px;min-width:30px;min-height:30px}
+  .scene-actions #reset-view{padding:7px 0 1px;height:30px}
+  .explorer-footer{left:22px;right:22px;bottom:30px;padding-top:19px;display:block}
+  .view-description{display:none}.reveal-control{max-width:none}
+  .range-title{font-size:11px;margin-bottom:19px}.range-labels{margin-top:17px}
+  .gesture-hint{left:22px;right:auto;bottom:209px;font-size:9px}
+  .height-key{right:22px;bottom:212px;width:80px;font-size:9px}
+  .compare-guide{top:32%;bottom:31%}.compare-guide span{width:26px;height:26px;line-height:24px}
+  .services-section{margin-top:0;padding-top:45px}
+}

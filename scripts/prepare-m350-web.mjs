@@ -1,0 +1,27 @@
+import fs from 'node:fs/promises';
+import {STLLoader} from 'three/addons/loaders/STLLoader.js';
+import {Document,NodeIO} from '@gltf-transform/core';
+import {ALL_EXTENSIONS} from '@gltf-transform/extensions';
+import {weld,simplify,draco} from '@gltf-transform/functions';
+import {MeshoptSimplifier} from 'meshoptimizer';
+import draco3d from 'draco3dgltf';
+const input=await fs.readFile('assets-source/m350/m350.stl');
+const geometry=new STLLoader().parse(input.buffer.slice(input.byteOffset,input.byteOffset+input.byteLength));
+const doc=new Document(),buffer=doc.createBuffer();
+const pos=doc.createAccessor().setType('VEC3').setArray(geometry.attributes.position.array).setBuffer(buffer);
+const material=doc.createMaterial('M350 RTK CAD surface').setBaseColorFactor([.02,.055,.085,1]).setMetallicFactor(0).setRoughnessFactor(1);
+// The surface only occludes rear wires; omitting split face normals permits useful simplification.
+const primitive=doc.createPrimitive().setAttribute('POSITION',pos).setMaterial(material);
+doc.createScene().addChild(doc.createNode('body').setMesh(doc.createMesh().addPrimitive(primitive)));
+await MeshoptSimplifier.ready;
+const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'draco3d.encoder':await draco3d.createEncoderModule()});
+await doc.transform(weld(),simplify({simplifier:MeshoptSimplifier,ratio:.28,error:.001}),draco());
+await fs.writeFile('public/models/m350-cad.glb',await io.writeBinary(doc));
+const summary=JSON.parse(await fs.readFile('assets-source/m350/cad-summary.json'));
+const raw=await fs.readFile('assets-source/m350/cad-edges.bin');
+const values=new Float32Array(raw.buffer,raw.byteOffset,raw.byteLength/4);
+const quantized=new Uint16Array(values.length);
+values.forEach((v,i)=>{const [lo,hi]=summary.bounds[i%3];quantized[i]=Math.round((v-lo)/(hi-lo)*65535);});
+await fs.writeFile('public/models/m350-edges.bin',new Uint8Array(quantized.buffer));
+await fs.writeFile('public/models/m350-cad.json',JSON.stringify({...summary,parts:[{name:'body',edges:'/models/m350-edges.bin',bounds:summary.bounds}],source:'https://enterprise.dji.com/matrice-350-rtk/downloads',model:'/models/m350-cad.glb',edges:'/models/m350-edges.bin',rights:'Manufacturer CAD; local evaluation. Public redistribution permission remains to be confirmed.'},null,2));
+console.log({triangles:primitive.getIndices()?.getCount()/3,glbBytes:(await fs.stat('public/models/m350-cad.glb')).size,edgeBytes:quantized.byteLength});

@@ -1,0 +1,116 @@
+import * as THREE from 'three';
+import { createOrbiModel } from './orbi-model.js';
+import { sampleExpression, ORBI_STATES } from './orbi-motion.js';
+
+const instances = new WeakMap();
+
+/** Mount in a sized element. Call destroy() before removing the host. */
+export function createOrbiAvatar(element, options = {}) {
+  if (!(element instanceof HTMLElement)) throw new TypeError('Orbi needs an HTML element.');
+  if (instances.has(element)) return instances.get(element);
+  const { compact = false, interactive = true, fallbackUrl = '/orbi/orbi-fallback.webp', motion = true, renderMode = 'auto' } = options;
+  const wrapper = document.createElement('span'); wrapper.className = 'orbi-avatar'; wrapper.setAttribute('aria-hidden','true');
+  const img = document.createElement('img'); img.className = 'orbi-avatar__fallback'; img.src = fallbackUrl; img.alt = ''; img.decoding = 'async'; img.draggable = false;
+  const canvas = document.createElement('canvas'); canvas.className = 'orbi-avatar__canvas';
+  wrapper.append(img); element.append(wrapper);
+  let state = 'idle', destroyed = false, enabled = !!motion, manuallyVisible = true, inViewport = false;
+  let renderer, model, environment, resizeObserver, intersectionObserver, scene, camera;
+  let width = 0, height = 0, frame = 0, frames = 0, last = 0, time = 0, lost = false;
+  let mouseX = 0, mouseY = 0, lookX = 0, lookY = 0, gestureTime = -1;
+  let pose = sampleExpression(state,0,false);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)'), removers = [];
+  let reducedMotion = reduced.matches;
+  const listen = (target,event,handler) => { target.addEventListener(event,handler); removers.push(() => target.removeEventListener(event,handler)); };
+  const animated = () => enabled && !reducedMotion;
+  const visible = () => manuallyVisible && inViewport && !document.hidden;
+  const running = () => !destroyed && !lost && renderer && visible() && width > 0 && height > 0 && animated();
+  function draw(dt = 1, moving = false) {
+    if (!renderer || lost || destroyed || !width || !height) return;
+    const target = sampleExpression(state,time,moving);
+    const ease = moving ? 1 - Math.exp(-dt * 10) : 1;
+    for (const key in pose) pose[key] += (target[key] - pose[key]) * ease;
+    lookX += ((moving ? mouseX : 0) - lookX) * ease; lookY += ((moving ? mouseY : 0) - lookY) * ease;
+    let lift = 0;
+    if (moving && gestureTime >= 0) { gestureTime += dt; lift = Math.sin(Math.min(1,gestureTime/1.2)*Math.PI)*.14; if (gestureTime >= 1.2) gestureTime = -1; }
+    model.update(pose,time,moving,lookX,lookY,lift);
+    renderer.render(scene,camera); frames++;
+    wrapper.dataset.renderer = 'webgl';
+  }
+  function tick(now) {
+    frame = 0; if (!running()) return;
+    const dt = last ? Math.min((now-last)/1000,.05) : 1/60; last = now; time += dt;
+    draw(dt,true); frame = requestAnimationFrame(tick);
+  }
+  function sync() {
+    cancelAnimationFrame(frame); frame = 0; last = 0;
+    if (destroyed) return;
+    wrapper.dataset.motion = running() ? 'running' : 'paused';
+    if (running()) frame = requestAnimationFrame(tick);
+    else if (visible()) draw();
+  }
+  function resize() {
+    if (!renderer || destroyed) return;
+    const rect = element.getBoundingClientRect(); width = Math.round(rect.width); height = Math.round(rect.height);
+    if (width && height) {
+      renderer.setSize(width,height,false); camera.aspect = width/height;
+      camera.position.z = 6.35 * Math.max(1,1/camera.aspect); camera.updateProjectionMatrix();
+    }
+    sync();
+  }
+  function rebuildEnvironment() {
+    // PMREM is a generated GPU render target; its pixels do not survive context loss.
+    environment?.dispose();
+    const pmrem = new THREE.PMREMGenerator(renderer), studio = new THREE.Scene();
+    studio.background = new THREE.Color(0x353e4b);
+    const cardGeometry = new THREE.PlaneGeometry(1,1);
+    for (const [color,x,y,z,sx,sy] of [[0xfff3df,-3,3,4,4,6],[0xaed4ff,4,1,2,2,5],[0xffffff,0,4,-2,5,2]]) {
+      const card = new THREE.Mesh(cardGeometry,new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide}));
+      card.position.set(x,y,z);card.scale.set(sx,sy,1);card.lookAt(0,0,0);studio.add(card);
+    }
+    environment = pmrem.fromScene(studio,.09); scene.environment = environment.texture;
+    studio.traverse(o=>o.material?.dispose());cardGeometry.dispose();pmrem.dispose();
+  }
+  const api = {
+    setState(value) { if (destroyed) return; state = ORBI_STATES.includes(value) ? value : 'idle'; wrapper.dataset.state = state; if (!running() && visible()) draw(); },
+    setMotion(value) { if (destroyed) return; enabled = !!value; gestureTime = -1; sync(); },
+    setVisible(value) { if (destroyed) return; manuallyVisible = !!value; sync(); },
+    playGesture(name = 'greet') { if (destroyed || !animated() || name !== 'greet') return; gestureTime = 0; },
+    getStatus() { return { state, renderer: wrapper.dataset.renderer, motion: wrapper.dataset.motion, frames, destroyed }; },
+    destroy() {
+      if (destroyed) return; destroyed = true; cancelAnimationFrame(frame);
+      resizeObserver?.disconnect(); intersectionObserver?.disconnect(); removers.forEach(fn=>fn());
+      model?.dispose(); environment?.dispose(); renderer?.dispose(); renderer?.forceContextLoss();
+      wrapper.remove(); instances.delete(element);
+    },
+  };
+  instances.set(element,api); wrapper.dataset.state = state; wrapper.dataset.renderer = 'artwork'; wrapper.dataset.motion = 'paused';
+  if (renderMode === 'artwork') return api;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'low-power' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1,compact ? 2 : 1.75));
+    renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+    scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(33,1,.1,30); camera.position.set(0,0,5.75);
+    rebuildEnvironment();
+    scene.add(new THREE.HemisphereLight(0xf0f4ff,0x23334c,2.4));
+    for (const [color,intensity,x,y,z] of [[0xfff1dd,3.5,-3,4,5],[0x91bded,2.5,4,1,-2],[0xffffff,2.8,-2,-1,-3]]) {
+      const light = new THREE.DirectionalLight(color,intensity); light.position.set(x,y,z); scene.add(light);
+    }
+    model = createOrbiModel({compact}); scene.add(model.root); wrapper.append(canvas);
+    resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element);
+    intersectionObserver = new IntersectionObserver(entries => { inViewport = entries[0].isIntersecting; sync(); }); intersectionObserver.observe(element);
+    listen(document,'visibilitychange',sync);
+    listen(reduced,'change',event=>{reducedMotion=event.matches;sync();});
+    listen(canvas,'webglcontextlost',e=>{ e.preventDefault(); lost=true; wrapper.dataset.renderer='artwork'; sync(); });
+    listen(canvas,'webglcontextrestored',()=>{ lost=false; rebuildEnvironment(); resize(); });
+    if (interactive) {
+      listen(element,'pointermove',e=>{ if (e.pointerType === 'touch') return; const r = element.getBoundingClientRect(); mouseX = Math.max(-1,Math.min(1,(e.clientX-r.left)/r.width*2-1)); mouseY = Math.max(-1,Math.min(1,1-(e.clientY-r.top)/r.height*2)); });
+      listen(element,'pointerleave',()=>{ mouseX=mouseY=0; });
+    }
+    resize();
+  } catch (error) {
+    resizeObserver?.disconnect(); intersectionObserver?.disconnect(); removers.forEach(fn=>fn());
+    model?.dispose(); environment?.dispose(); renderer?.dispose(); renderer = null; canvas.remove();
+    options.onError?.(error);
+  }
+  return api;
+}

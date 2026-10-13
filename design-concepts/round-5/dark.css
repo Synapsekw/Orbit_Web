@@ -1,0 +1,34 @@
+/* All studies share Orbit's navy and gold. UI gold is drawn from the original symbol's #b98947–#faf0a1 range. */
+.mode-toggle{background:none;color:var(--ink);border:0;border-bottom:1px solid var(--line);padding:10px 0;white-space:nowrap;font-size:11px;line-height:1.5}
+.mode-toggle:hover{color:var(--accent);border-color:var(--accent)}
+.skip{color:var(--paper)}
+img[src$="spatial-model-preview.webp"]{object-fit:contain;background:#07182b}
+.theme-fieldwork .mode-toggle{align-self:flex-start;margin-top:-28px;order:2}
+.theme-fieldwork .rail-footer{order:3}
+html[data-mode=dark]{background:#07182b;color-scheme:dark}
+html[data-mode=dark] body{--paper:#07182b;--ink:#f3f4f5;--muted:#a8b6c8;--line:#2b4058;--accent:#d6b56d;--wash:#0d2239;background:var(--paper);color:var(--ink)}
+html[data-mode=dark] .theme-gallery{--paper:#0a1c31;--wash:#102740;--line:#31445d}
+html[data-mode=dark] .theme-fieldwork{--paper:#07182b;--wash:#0d2239;--line:#2b4058}
+html[data-mode=dark] .brand img{filter:none}
+html[data-mode=dark] .theme-gallery .spatial-plate,html[data-mode=dark] .theme-gallery .model-loading,html[data-mode=dark] .theme-gallery .reset-view{background:var(--wash)}
+html[data-mode=dark] .article-body article p{color:var(--muted)}
+html[data-mode=dark] .contact-symbol{filter:none;opacity:.55}
+html[data-mode=dark] .chapter-number{color:var(--accent)}
+html[data-mode=dark] input::placeholder,html[data-mode=dark] textarea::placeholder{color:#9baabe}
+html[data-mode=dark] select option{background:var(--paper);color:var(--ink)}
+html[data-mode=dark] ::selection{background:#d6b56d;color:#07182b}
+html[data-mode=dark] .model-fallback{background-image:linear-gradient(#07182b44,#07182b44),url('/images/spatial-model-preview.webp')}
+html[data-mode=dark] .header-cta,html[data-mode=dark] .solid-button{background:var(--accent);border-color:var(--accent);color:#07182b}
+html[data-mode=dark] .header-cta:hover,html[data-mode=dark] .solid-button:hover{background:#e4c98d;color:#07182b}
+html[data-mode=dark] .theme-gallery .header-cta,html[data-mode=dark] .theme-fieldwork .header-cta{background:transparent;color:var(--accent)}
+html[data-mode=dark] .theme-gallery .header-cta:hover,html[data-mode=dark] .theme-fieldwork .header-cta:hover{color:#eed59d}
+.review-bar{background:#0d2239;color:#eef2f7;border-color:#536177;box-shadow:0 3px 25px #0004}
+.review-bar a[aria-current]{background:#d6b56d;color:#07182b}
+.review-bar a[aria-current]:hover{background:#e4c98d}
+.review-bar a:hover{background:#1b3551}
+.review-bar .review-home,.review-bar .review-page,.review-bar>a:not(.review-home)>span{color:#b3bfd0}
+.review-bar a[aria-current]>span{color:#354052}
+.review-divider{background:#536177}
+@media(max-width:1100px) and (min-width:961px){.site-header{gap:22px}.site-header nav{gap:22px}.site-header .header-cta{display:none}}
+@media(max-width:960px){.theme-fieldwork .mode-toggle{order:initial;margin-top:0;align-self:auto}}
+@media(max-width:700px){.site-header,.theme-gallery .site-header,.theme-fieldwork .site-header{gap:18px}.site-header .brand img,.theme-gallery .site-header .brand img,.theme-fieldwork .site-header .brand img{width:145px}.mode-toggle{font-size:9px;order:1}.menu-toggle{order:2;margin-left:0}.site-header .brand{margin-right:auto}.theme-fieldwork .mode-toggle{order:1}.menu-toggle{font-size:11px;gap:9px}}
