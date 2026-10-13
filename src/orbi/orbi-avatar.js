@@ -122,7 +122,9 @@ export function createOrbiAvatar(element, options = {}) {
   listen(reduced,'change',event=>{reducedMotion=event.matches;sync();});
   if (renderMode === 'artwork') { resize(); return api; }
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'low-power' });
+    // The small launcher already uses a high-DPI canvas. Avoid an additional
+    // multisample target competing with the hero; retain it for the large view.
+    renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:!compact, powerPreference:'low-power' });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1,compact ? 2 : 1.75));
     renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
     scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(33,1,.1,30); camera.position.set(0,0,5.75);

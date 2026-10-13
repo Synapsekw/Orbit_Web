@@ -22,13 +22,13 @@ These isolation scores are not release results. No request blocking, browser det
 - Disable multisample antialiasing on the shared DJI canvas, retaining the existing bounded high-DPI resolution. This avoids expensive multisample rendering/resolves on software graphics. Thin diagonal lines can be a little sharper; desktop and 390px mobile visual checks retained the intended gold CAD appearance.
 - Add real-asset decoding tests that enforce the 30,000-triangle surface budget and preserve the five-part assembly and rotor translations. The tests failed against both original assets before regeneration.
 
-The M400 GLB shrinks from 330,664 to 65,044 bytes; M350 from 307,996 to 88,404 bytes. Metadata and CAD line files are byte-for-byte unchanged. Orbi, Elios, PWA, SEO and contact handling are unchanged.
+The M400 GLB shrinks from 330,664 to 65,044 bytes; M350 from 307,996 to 88,404 bytes. Metadata and CAD line files are byte-for-byte unchanged. Elios, PWA, SEO and contact handling are unchanged.
 
 ## Validation
 
 One change was measured at a time with the same old browser and software rendering. On localhost, removing only the redundant triangle overlay still timed out. Simplifying the surfaces eliminated the timeout (62 performance, 1,236 ms TBT). Removing multisampling then scored 88 with 278 ms TBT.
 
-The final full localhost audit, with **all normal components and animations enabled**, returned:
+The first full localhost audit, with **all normal components and animations enabled**, returned:
 
 | Measurement | Result |
 | --- | ---: |
@@ -45,7 +45,13 @@ The final full localhost audit, with **all normal components and animations enab
 | Cumulative layout shift | 0.000213 |
 | Run warnings | None |
 
-The initial reproduction was hosted and these development measurements were local, so they should not be presented as a matched score comparison. They establish that the specific software-graphics stall is gone in the local build. Recheck the hosted PR build, then the production URL after the user's manual merge. Scores vary with server, hardware and network conditions.
+The initial reproduction was hosted and these development measurements were local, so they should not be presented as a matched score comparison. They establish that the specific software-graphics stall is gone in the local build. Scores vary with server, hardware and network conditions.
+
+### Hosted follow-up
+
+The first hosted preview (`dd5b3fa`) completed without a timeout but scored 67, with 1,494 ms TBT. Disabling only Orbi for diagnostic isolation raised it to 93 / 203 ms. With both renderers now able to load quickly, the compact avatar's multisampling became a remaining source of graphics contention.
+
+The follow-up also disables MSAA for compact Orbi avatars, retaining their existing high-DPI canvas, geometry, materials and full animation. Full-size Orbi views keep MSAA. Its first localhost check scored 91 / 203 ms TBT with no warnings. Independent review confirmed lifecycle behavior and the regenerated standalone bundle are consistent. Hosted verification follows; do not quote the local score as the deployed result.
 
 103 tests pass, including model budgets, propeller animation, framing, PWA and production SEO generation. The production build and both repository/public credential scans pass. The existing Vite warning about the shared Three.js chunk remains. Desktop/mobile browser checks cover M400/M350 switching, visible real wireframes, keyboard reset, no horizontal overflow, Orbi opening/closing, and no captured console errors. No enquiry was sent.
 
