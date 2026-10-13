@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "design-concepts/orbi-round-1/02-halo-companion.png",
+  "prompt": "Use case: precise-object-edit.\nCreate the production transparent character cutout from the approved reference image, Option 2 Orbi / Halo Companion. Extract and faithfully reconstruct ONLY the LARGE hero character on the LEFT of the reference board. Remove absolutely all lettering, labels, small right-hand poses, dividers, background, ground and cast floor shadow. Genuine transparent alpha outside the character and through the open gaps between the silver orbital ribbons. Preserve the approved character: friendly round dark graphite face; two warm ivory expressive oval eyes; tiny subtle smile; sculptural broad satin platinum/silver looping orbital ribbons around and behind the head with restrained cool reflections. Preserve the reference's ribbon arrangement, face proportions, eyes, polished dimensional materials and curious tilt. Do not redesign into a flat emblem, hexagon or body. One character, centered square image with comfortable 10 percent transparent margin, fully inside frame, high quality antialiased edges. No added ornament, no extra glowing particles, no oval ground shadow. Eye glow must be restrained, alpha maintained. This image will be used as the website fallback for the animated version of the same character.",
+  "original": "orbi-fallback.png",
+  "optimized": [
+    "orbi-fallback.webp",
+    "orbi-icon.webp"
+  ]
+}

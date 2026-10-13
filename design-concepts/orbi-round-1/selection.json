@@ -1,0 +1,17 @@
+{
+  "character": "Orbi",
+  "selectedOption": 2,
+  "selectedDirection": "Halo Companion",
+  "referenceImage": "02-halo-companion.png",
+  "status": "Animated character and widget ready for website integration",
+  "packagePath": "public/orbi/",
+  "integrationGuide": "public/orbi/README.md",
+  "previewPath": "/orbi/preview.html",
+  "liveAIConnected": false,
+  "visualTraits": [
+    "Rounded dark graphite face",
+    "Sculpted silver orbital ribbons inspired by the Orbit Aerials icon",
+    "Warm expressive eyes and a small smile",
+    "Floating silhouette"
+  ]
+}

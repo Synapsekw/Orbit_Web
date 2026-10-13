@@ -1,0 +1,221 @@
+{
+  "animationCount": 0,
+  "categories": [
+    {
+      "uid": "f825c721edb541dbbc8cd210123616c7",
+      "name": "Architecture",
+      "slug": "architecture",
+      "uri": "https://api.sketchfab.com/v3/categories/f825c721edb541dbbc8cd210123616c7",
+      "icon": "https://static.sketchfab.com/static/builds/web/dist/static/assets/images/icons/categories/0d6c3fa023a12c3d7aa493c542afd1b8-v2.svg",
+      "thumbnails": [
+        {
+          "width": "512",
+          "height": "288",
+          "url": "https://static.sketchfab.com/categories/f825c721edb541dbbc8cd210123616c7/512x288.png"
+        },
+        {
+          "width": "800",
+          "height": "450",
+          "url": "https://static.sketchfab.com/categories/f825c721edb541dbbc8cd210123616c7/800x450.png"
+        }
+      ]
+    },
+    {
+      "uid": "ac8a0065d9e34fca8a3ffa9c6db39bff",
+      "name": "Sports & Fitness",
+      "slug": "sports-fitness",
+      "uri": "https://api.sketchfab.com/v3/categories/ac8a0065d9e34fca8a3ffa9c6db39bff",
+      "icon": "https://static.sketchfab.com/static/builds/web/dist/static/assets/images/icons/categories/2cc5442dbf0aeeed5327cbf073964157-v2.svg",
+      "thumbnails": [
+        {
+          "width": "512",
+          "height": "288",
+          "url": "https://static.sketchfab.com/categories/ac8a0065d9e34fca8a3ffa9c6db39bff/512x288.png"
+        },
+        {
+          "width": "800",
+          "height": "450",
+          "url": "https://static.sketchfab.com/categories/ac8a0065d9e34fca8a3ffa9c6db39bff/800x450.png"
+        }
+      ]
+    }
+  ],
+  "commentCount": 0,
+  "createdAt": "2020-10-08T11:08:23.193652",
+  "embedUrl": "https://sketchfab.com/models/9f5edb6287284b9885fc833982d11962/embed",
+  "faceCount": 599999,
+  "isAgeRestricted": false,
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "likeCount": 27,
+  "name": "Stadium under construction | Drone 3D Scan",
+  "publishedAt": "2020-10-08T11:22:25.069023",
+  "soundCount": 0,
+  "staffpickedAt": null,
+  "tags": [
+    {
+      "name": "stadium",
+      "slug": "stadium",
+      "uri": "https://api.sketchfab.com/v3/tags/stadium"
+    },
+    {
+      "name": "drone",
+      "slug": "drone",
+      "uri": "https://api.sketchfab.com/v3/tags/drone"
+    },
+    {
+      "name": "3d-scan",
+      "slug": "3d-scan",
+      "uri": "https://api.sketchfab.com/v3/tags/3d-scan"
+    },
+    {
+      "name": "site",
+      "slug": "site",
+      "uri": "https://api.sketchfab.com/v3/tags/site"
+    },
+    {
+      "name": "fc",
+      "slug": "fc",
+      "uri": "https://api.sketchfab.com/v3/tags/fc"
+    },
+    {
+      "name": "austin",
+      "slug": "austin",
+      "uri": "https://api.sketchfab.com/v3/tags/austin"
+    },
+    {
+      "name": "construction-site",
+      "slug": "construction-site",
+      "uri": "https://api.sketchfab.com/v3/tags/construction-site"
+    },
+    {
+      "name": "videogrammetry",
+      "slug": "videogrammetry",
+      "uri": "https://api.sketchfab.com/v3/tags/videogrammetry"
+    },
+    {
+      "name": "agisoft",
+      "slug": "agisoft",
+      "uri": "https://api.sketchfab.com/v3/tags/agisoft"
+    },
+    {
+      "name": "photogrammetry",
+      "slug": "photogrammetry",
+      "uri": "https://api.sketchfab.com/v3/tags/photogrammetry"
+    },
+    {
+      "name": "usa",
+      "slug": "usa",
+      "uri": "https://api.sketchfab.com/v3/tags/usa"
+    },
+    {
+      "name": "construction",
+      "slug": "construction",
+      "uri": "https://api.sketchfab.com/v3/tags/construction"
+    }
+  ],
+  "thumbnails": {
+    "images": [
+      {
+        "uid": "7fae745863ee46e79e91a673dd80bfa2",
+        "width": 1920,
+        "height": 1080,
+        "size": 402611,
+        "url": "https://media.sketchfab.com/models/9f5edb6287284b9885fc833982d11962/thumbnails/5d9a18d6e8a148e290de8f839c761a13/3ab607faa4d04e58870f04367ef93c57.jpeg"
+      },
+      {
+        "uid": "16b34031beac4defac2b57cdd3e79127",
+        "width": 1024,
+        "height": 576,
+        "size": 110851,
+        "url": "https://media.sketchfab.com/models/9f5edb6287284b9885fc833982d11962/thumbnails/5d9a18d6e8a148e290de8f839c761a13/02f3850d426c4d5aa9c5832198ccf00d.jpeg"
+      },
+      {
+        "uid": "fd13dbcb0dbe45d6a6d323f9b4b1d1ec",
+        "width": 720,
+        "height": 405,
+        "size": 60622,
+        "url": "https://media.sketchfab.com/models/9f5edb6287284b9885fc833982d11962/thumbnails/5d9a18d6e8a148e290de8f839c761a13/80ee4da0e11f4b41b7715aa28a4aa2d7.jpeg"
+      },
+      {
+        "uid": "8f9356c79ed14f4d9af4472e9e4a05fb",
+        "width": 256,
+        "height": 144,
+        "size": 10143,
+        "url": "https://media.sketchfab.com/models/9f5edb6287284b9885fc833982d11962/thumbnails/5d9a18d6e8a148e290de8f839c761a13/a7f72a944db1481094a87c06f3883dc0.jpeg"
+      },
+      {
+        "uid": "f32667bb792f427ab9bebcb31f6c620a",
+        "width": 64,
+        "height": 36,
+        "size": 1252,
+        "url": "https://media.sketchfab.com/models/9f5edb6287284b9885fc833982d11962/thumbnails/5d9a18d6e8a148e290de8f839c761a13/9f1172ab37d94e8684796d8ac255a276.jpeg"
+      }
+    ]
+  },
+  "uid": "9f5edb6287284b9885fc833982d11962",
+  "uri": "https://api.sketchfab.com/v3/models/9f5edb6287284b9885fc833982d11962",
+  "user": {
+    "uid": "ac485772008e458fab94d970c27ddd93",
+    "username": "Sircher",
+    "displayName": "Sircher",
+    "account": "basic",
+    "profileUrl": "https://sketchfab.com/Sircher",
+    "avatar": {
+      "uid": "d1bbec2ee15e4ac0b362572a6dfc6bfc",
+      "uri": "https://api.sketchfab.com/v3/avatars/d1bbec2ee15e4ac0b362572a6dfc6bfc",
+      "images": [
+        {
+          "width": 32,
+          "height": 32,
+          "size": 2343,
+          "url": "https://media.sketchfab.com/avatars/d1bbec2ee15e4ac0b362572a6dfc6bfc/66bbd2419b574af7ab935fcee8097baf.png"
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "size": 4349,
+          "url": "https://media.sketchfab.com/avatars/d1bbec2ee15e4ac0b362572a6dfc6bfc/152c62a5d26e436ab4bab6b57d7b82fa.png"
+        },
+        {
+          "width": 90,
+          "height": 90,
+          "size": 11461,
+          "url": "https://media.sketchfab.com/avatars/d1bbec2ee15e4ac0b362572a6dfc6bfc/58158c819b0f4e5b91dd0d109ff0bb0c.png"
+        },
+        {
+          "width": 100,
+          "height": 100,
+          "size": 13399,
+          "url": "https://media.sketchfab.com/avatars/d1bbec2ee15e4ac0b362572a6dfc6bfc/bec06f0dde144a5ca6f32f938a801b32.png"
+        }
+      ]
+    },
+    "uri": "https://api.sketchfab.com/v3/users/ac485772008e458fab94d970c27ddd93"
+  },
+  "vertexCount": 300793,
+  "viewCount": 1751,
+  "viewerUrl": "https://sketchfab.com/3d-models/stadium-under-construction-drone-3d-scan-9f5edb6287284b9885fc833982d11962",
+  "isDownloadable": true,
+  "isProtected": false,
+  "description": "A videogrammetry of Austin FC Stadium being built made in Agisoft software from 128 frames from this video: https://www.youtube.com/watch?v=eWoALVkw1Es",
+  "price": null,
+  "downloadCount": 307,
+  "editorUrl": "https://sketchfab.com/models/9f5edb6287284b9885fc833982d11962/edit",
+  "status": {
+    "warning": {},
+    "processing": "SUCCEEDED"
+  },
+  "source": "website",
+  "hasCommentsDisabled": false,
+  "updatedAt": "2022-07-04T16:50:36.359082",
+  "pbrType": null,
+  "textureCount": 1,
+  "materialCount": 1
+}

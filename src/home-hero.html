@@ -1,0 +1,39 @@
+<section class="hero" aria-labelledby="hero-title">
+        <div class="hero-intro">
+          <span class="eyebrow">CONSTRUCTION. SEEN CLEARLY.</span>
+          <h1 id="hero-title">Your entire site.<br><span>In perspective.</span></h1>
+          <p>Aerial documentation. Spatial understanding.</p>
+        </div>
+        <div class="view-picker" role="group" aria-label="Site representation">
+          <button type="button" data-mode="photo" aria-pressed="false"><span class="mode-icon photo-icon" aria-hidden="true"></span>Photogrammetry</button>
+          <button type="button" data-mode="points" aria-pressed="true"><span class="mode-icon points-icon" aria-hidden="true"></span>Point cloud</button>
+          <button type="button" data-mode="dsm" aria-pressed="false"><span class="mode-icon dsm-icon" aria-hidden="true"></span>DSM</button>
+        </div>
+        <div class="scene-wrap">
+          <div id="scene" role="img" aria-label="Interactive aerial 3D scan of a large construction site. Drag to orbit, scroll to zoom, or use the camera controls."></div>
+          <div class="scene-loading" role="status"><span class="loading-spinner"></span><span id="loading-copy">Loading the captured site</span></div>
+          <div id="scene-fallback" hidden><p>The 3D site couldn’t be loaded.</p><p>Reload to try again. The viewer needs WebGL 2 and hardware acceleration.</p></div>
+          <div class="scene-caption"><span>SPATIAL EXPLORER</span><span>Stadium construction · sample scan</span></div>
+          <div class="scene-actions" role="group" aria-label="Camera controls">
+            <button id="rotate-left" type="button" aria-label="Rotate left" title="Rotate left">↶</button>
+            <button id="rotate-right" type="button" aria-label="Rotate right" title="Rotate right">↷</button>
+            <button id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+            <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+            <button id="reset-view" type="button" aria-label="Reset view" title="Reset view">Reset</button>
+          </div>
+          <div class="compare-guide" aria-hidden="true"><span>↔</span></div>
+          <div class="height-key" hidden><span>Surface height</span><div></div><span class="height-labels"><span>Low</span><span>High</span></span></div>
+          <div class="gesture-hint">Drag to orbit <span>·</span> Scroll to zoom</div>
+        </div>
+        <div class="explorer-footer">
+          <div class="view-description" aria-live="polite" aria-atomic="true">
+            <h2 id="view-title">A different kind of detail.</h2>
+            <p id="view-copy">A cloud of surface points, revealing the geometry behind the image.</p>
+          </div>
+          <div class="reveal-control">
+            <div class="range-title"><label for="reveal">Reveal point cloud</label><output for="reveal" id="reveal-value">32%</output></div>
+            <input id="reveal" type="range" min="0" max="100" value="32" aria-label="Reveal point cloud" />
+            <div class="range-labels"><span>Photogrammetry</span><span id="layer-label">Point cloud</span></div>
+          </div>
+        </div>
+      </section>

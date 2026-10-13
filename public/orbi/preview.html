@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Meet Orbi — Orbit Aerials</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/orbi/orbi.css">
+  <link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+  <header class="top"><a href="/" aria-label="Orbit Aerials home">ORBIT AERIALS</a><span>Orbi · Character & widget preview</span><a href="/orbi/README.md">Integration notes ↗</a></header>
+  <main>
+    <section class="intro"><p class="eyebrow">A LITTLE PERSPECTIVE.</p><h1>Meet Orbi.</h1><p>A curious companion for a clearer view.</p></section>
+    <section class="studio" aria-label="Interactive character preview">
+      <div class="character-area" data-surface="navy">
+        <div id="hero-avatar" role="img" aria-label="Orbi, a friendly graphite orb surrounded by silver orbital ribbons"></div>
+        <span class="stage-caption">Halo Companion · Approved direction 02</span>
+        <span class="stage-hint">Move your pointer to catch his eye</span>
+      </div>
+      <div class="controls">
+        <p class="eyebrow">A FACE FOR EVERY MOMENT</p><h2>A little character.<br>A lot of expression.</h2>
+        <p class="description" id="state-description">Relaxed eyes, a small smile, and a gentle hover.</p>
+        <div class="states" role="group" aria-label="Character expression">
+          <button data-state="idle" aria-pressed="true">Idle</button><button data-state="curious" aria-pressed="false">Curious</button>
+          <button data-state="listening" aria-pressed="false">Listening</button><button data-state="thinking" aria-pressed="false">Thinking</button>
+          <button data-state="speaking" aria-pressed="false">Speaking</button><button data-state="happy" aria-pressed="false">Happy</button>
+          <button data-state="surprised" aria-pressed="false">Surprised</button><button data-state="concerned" aria-pressed="false">Concerned</button>
+        </div>
+        <div class="motion-controls"><button id="greet">Say hello ↗</button><button id="pause" aria-pressed="false">Pause motion Ⅱ</button></div>
+        <div class="surfaces" role="group" aria-label="Preview background"><span>View against</span><button data-surface="navy" aria-pressed="true">Navy</button><button data-surface="ivory" aria-pressed="false">Ivory</button><button data-surface="checker" aria-pressed="false">Transparency</button></div>
+        <div class="renderer-note"><span id="render-status" role="status">Loading character…</span><a href="?artwork=1">View fallback ↗</a></div>
+      </div>
+    </section>
+    <section class="widget-note"><div><p class="eyebrow">YOUR ORBIT GUIDE</p><h2>Ready for a conversation.</h2></div><div><p>Open the widget to explore services, try a question, or find the team. This preview uses prepared guidance; no messages are sent.</p><button id="open-widget">Meet Orbi in the widget <span>↗</span></button></div></section>
+    <section class="artwork"><div><h2>One character. Every setting.</h2><p>The transparent artwork keeps Orbi visible when 3D is unavailable.</p><div class="downloads"><a href="/orbi/orbi-fallback.png" download>Original transparent PNG ↗</a><a href="/orbi/orbi-fallback.webp" download>Web image ↗</a></div></div><figure><img src="/orbi/orbi-fallback.webp" width="250" height="250" alt="Approved Orbi transparent fallback"><figcaption>Approved artwork · transparent background</figcaption></figure></section>
+  </main>
+  <footer class="bottom">ORBIT AERIALS <span>Orbi / Halo Companion</span></footer>
+  <script type="module" src="./preview.js"></script>
+</body>
+</html>
