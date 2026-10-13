@@ -57,6 +57,11 @@ test('production publishes local business, site and page identity with truthful 
  for(const route of routes){
   const html=await read(pageFile(route)),data=schemas(html),graph=data.flatMap(s=>s['@graph']||[s]);
   assert.match(html,/<meta name="robots" content="index,follow,max-image-preview:large">/);
+  assert.match(html,/<link rel="manifest" href="\/manifest.webmanifest">/);
+  assert.match(html,/<link rel="apple-touch-icon" href="\/icons\/apple-touch-icon.png" sizes="180x180">/);
+  assert.match(html,/<link rel="icon" href="\/favicon.ico"/);
+  const bootstrap=html.indexOf('<script>document.documentElement.classList.add("js")</script>');
+  assert.ok(bootstrap>0&&bootstrap<html.indexOf('rel="stylesheet"'),'Mobile enhancement must be selected before styles can paint');
   assert.match(html,/<meta property="og:site_name" content="Orbit Aerials">/);
   assert.match(html,/<meta name="twitter:title" content="[^"]+">/);
   assert.match(html,/<meta name="twitter:description" content="[^"]+">/);

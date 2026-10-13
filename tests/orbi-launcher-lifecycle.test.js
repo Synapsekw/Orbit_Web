@@ -77,3 +77,35 @@ test('launcher cancels work when hidden, outside the viewport, open, or motion i
   avatar.destroy();
   assert.equal(browser.frames.size,0);
 });
+
+test('compact avatars keep rendering bounded on high refresh displays', t => {
+  let avatar;
+  t.after(()=>avatar?.destroy());
+  const browser = browserFixture(t);
+  avatar = createOrbiAvatar(browser.host,{renderMode:'artwork',playful:true,compact:true});
+  const initialFrames = avatar.getStatus().frames;
+  for (let frame=0; frame<=600; frame++) browser.step(frame * 1000 / 120);
+  const rendered = avatar.getStatus().frames - initialFrames;
+  assert.ok(rendered >= 145 && rendered <= 152, `expected about 150 updates in five seconds, received ${rendered}`);
+});
+
+test('a slow device keeps the same jump timing and eighteen second loop', t => {
+  const poses = [];
+  for (const interval of [1000/120,100]) {
+    const browser = browserFixture(t);
+    const avatar = createOrbiAvatar(browser.host,{renderMode:'artwork',playful:true,compact:true});
+    const visual = browser.host.children.find(element=>element.className==='orbi-avatar');
+    browser.step(0);
+    for (let elapsed=interval; elapsed<3500-.001; elapsed+=interval) browser.step(elapsed);
+    browser.step(3500);
+    const jump = visual.style.transform;
+    for (let elapsed=3500+interval; elapsed<21500-.001; elapsed+=interval) browser.step(elapsed);
+    browser.step(21500);
+    const numbers = value=>value.match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/g).map(Number);
+    const first=numbers(jump), repeated=numbers(visual.style.transform);
+    first.forEach((number,index)=>assert.ok(Math.abs(number-repeated[index])<.0001, 'the jump repeats after eighteen active seconds'));
+    poses.push(first);
+    avatar.destroy();
+  }
+  poses[0].forEach((number,index)=>assert.ok(Math.abs(number-poses[1][index])<.0001, 'missed frames must not slow the choreography clock'));
+});
