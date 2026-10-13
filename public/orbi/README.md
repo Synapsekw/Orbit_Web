@@ -12,7 +12,8 @@ Copy this directory to `/orbi/` on the website. Runtime files:
 - `orbi.css` — styles for standalone avatars. The widget also carries its own scoped stylesheet inside Shadow DOM.
 - `orbi-fallback.webp` — 640px transparent artwork for larger avatars.
 - `orbi-icon.webp` — 160px transparent artwork for compact avatars.
-- `orbi-studio-cubeuv.png` — prefiltered studio lighting required by the 3D model. Deploy it unchanged alongside the other runtime assets; `assetBase` also controls this image's location.
+- `orbi-launcher.webp` — 256px transparent artwork for the animated widget and initial site launcher.
+- `orbi-studio-cubeuv.webp` — prefiltered studio lighting required by the 3D model. Deploy it unchanged alongside the other runtime assets; `assetBase` also controls this image's location.
 - `orbi-fallback.png` — original transparent artwork, available for design use; not needed at runtime.
 - `THIRD-PARTY-LICENSES.txt` — Three.js license.
 

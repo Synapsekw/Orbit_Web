@@ -61,7 +61,7 @@ export function mountOrbiWidget(options = {}) {
   let locked = false, previousOverflow, previousPriority, connected = !transport, connecting = false, contactBusy = false, callbacks = false;
   const cleanup = [];
   const on = (target,event,fn) => { target.addEventListener(event,fn); cleanup.push(()=>target.removeEventListener(event,fn)); };
-  const avatarOptions = {compact:true, interactive:true, motion:motionEnabled && motionAllowed, fallbackUrl:assetBase+'orbi-icon.webp', environmentUrl:assetBase+'orbi-studio-cubeuv.png', renderMode};
+  const avatarOptions = {compact:true, interactive:true, motion:motionEnabled && motionAllowed, fallbackUrl:assetBase+'orbi-launcher.webp', environmentUrl:assetBase+'orbi-studio-cubeuv.webp', renderMode};
   const launcherAvatar = createOrbiAvatar($('.orbi-launcher__avatar'),{...avatarOptions,playful:true,interactive:false});
   let launcherHovered = false, launcherFocused = false;
   const holdLauncher = () => launcherAvatar.setHeld(launcherHovered || launcherFocused);
