@@ -12,6 +12,7 @@ Copy this directory to `/orbi/` on the website. Runtime files:
 - `orbi.css` — styles for standalone avatars. The widget also carries its own scoped stylesheet inside Shadow DOM.
 - `orbi-fallback.webp` — 640px transparent artwork for larger avatars.
 - `orbi-icon.webp` — 160px transparent artwork for compact avatars.
+- `orbi-studio-cubeuv.png` — prefiltered studio lighting required by the 3D model. Deploy it unchanged alongside the other runtime assets; `assetBase` also controls this image's location.
 - `orbi-fallback.png` — original transparent artwork, available for design use; not needed at runtime.
 - `THIRD-PARTY-LICENSES.txt` — Three.js license.
 
@@ -122,6 +123,7 @@ Supplying `respond` changes the label to “AI assistant”; the host must suppl
   const { createOrbiAvatar } = await import('/orbi/orbi.js');
   const avatar = createOrbiAvatar(document.querySelector('#orbi-hero'), {
     fallbackUrl: '/orbi/orbi-fallback.webp',
+    environmentUrl: '/orbi/orbi-studio-cubeuv.png',
     compact: false,
     interactive: true,
     motion: true,
@@ -136,6 +138,8 @@ Methods: `setState(name)`, `setMotion(boolean)`, `setVisible(boolean)`, `playGes
 
 The avatar renders over a transparent canvas; give the host a width and height. It pauses when offscreen, manually hidden, or the document is hidden. Reduced motion disables the loop and renders a still pose; expressions can still be changed. Loss of the WebGL context exposes the transparent artwork. The fallback remains a static image, so it does not depict different expressions.
 
+The studio texture preserves the original lighting without generating an environment map on each visitor's GPU. Avatars sharing an environment URL reuse its decoded pixels while owning independent GPU textures. The first 3D frame waits for shader preparation; context restoration prepares the replacement context. Compact avatars render at up to 30 fps while the choreography keeps its eighteen-second timing. For a standalone avatar installed outside `/orbi/`, set both `fallbackUrl` and `environmentUrl`.
+
 The procedural 3D rig interprets the approved artwork; it is not a pixel-identical reproduction of the generated image. Three broad ribbon loops produce the six-lobed orbital silhouette while keeping the face open. Speaking is a visual expression, not audio playback or a claim that voice support exists.
 
 ## Build and verification
@@ -148,6 +152,8 @@ npm test
 ```
 
 Build only touches `/public/orbi/`; it does not rebuild website pages. Source is in `src/orbi/`, preview source in `orbi-preview/`.
+
+To rebake the studio after an intentional lighting change, run the development server and open `/src/orbi/bake-environment.html`. Save its PNG as `public/orbi/orbi-studio-cubeuv.png`; the helper documents lossless recompression. Keep the CubeUV dimensions, orientation, colors and roughness levels intact.
 
 Browser regression checks are in `tests/orbi-browser.mjs`. Run against a local Vite server with `ORBI_PREVIEW_URL` if using a port other than 5190. They need Playwright and Chrome; `ORBI_PLAYWRIGHT_MODULE` can point to an existing installed Playwright package. The test creates its own isolated headless browser and does not use the website session's browser profile.
 

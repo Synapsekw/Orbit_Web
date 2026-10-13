@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- Development-only: npm run dev, then open /src/orbi/bake-environment.html.
+     Save the downloaded PNG to public/orbi/orbi-studio-cubeuv.png. It may be
+     losslessly recompressed with Sharp's
+     png({compressionLevel:9,adaptiveFiltering:true,palette:false}).
+     Do not resize, flip, quantize its palette or transform its color space:
+     the atlas stores the exact CubeUV mip layout expected by Three's shader.
+     This page is not imported by an application entrypoint or shipped by Vite. -->
+<html lang="en"><meta charset="utf-8"><title>Bake Orbi studio</title>
+<style>body{font:18px system-ui;background:#17202b;color:#eef3f8;padding:40px}button{font:inherit;padding:14px 20px}pre{white-space:pre-wrap}canvas{max-width:420px;display:block;margin-top:24px}</style>
+<h1>Bake the approved Orbi studio</h1>
+<p>Runs the existing Three.js studio reflection calculation once, then downloads its prefiltered CubeUV pixels.</p>
+<button id="bake">Bake and download environment</button><pre id="status">Ready</pre>
+<script type="module">
+import * as THREE from '/node_modules/three/build/three.module.js';
+const button=document.querySelector('#bake'), status=document.querySelector('#status');
+button.onclick=async()=>{
+  button.disabled=true; status.textContent='Baking exact original studio…';
+  await new Promise(resolve=>setTimeout(resolve,50));
+  const start=performance.now(), renderer=new THREE.WebGLRenderer({antialias:false});
+  const studio=new THREE.Scene(); studio.background=new THREE.Color(0x353e4b);
+  const cardGeometry=new THREE.PlaneGeometry(1,1);
+  for(const [color,x,y,z,sx,sy] of [[0xfff3df,-3,3,4,4,6],[0xaed4ff,4,1,2,2,5],[0xffffff,0,4,-2,5,2]]){
+    const card=new THREE.Mesh(cardGeometry,new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide}));
+    card.position.set(x,y,z);card.scale.set(sx,sy,1);card.lookAt(0,0,0);studio.add(card);
+  }
+  const pmrem=new THREE.PMREMGenerator(renderer), target=pmrem.fromScene(studio,.09);
+  const {width,height}=target, pixels=new Uint16Array(width*height*4);
+  await renderer.readRenderTargetPixelsAsync(target,0,0,width,height,pixels);
+  const image=new ImageData(width,height);
+  let peak=0;
+  for(let i=0;i<pixels.length;i+=4){
+    for(let c=0;c<3;c++){
+      const linear=THREE.DataUtils.fromHalfFloat(pixels[i+c]); peak=Math.max(peak,linear);
+      const srgb=linear<=.0031308?linear*12.92:1.055*Math.pow(linear,1/2.4)-.055;
+      image.data[i+c]=Math.round(Math.min(1,Math.max(0,srgb))*255);
+    }
+    image.data[i+3]=255;
+  }
+  // Preserve GL's bottom-first row order; the runtime texture uses flipY=false.
+  const output=document.createElement('canvas');output.width=width;output.height=height;
+  output.getContext('2d').putImageData(image,0,0);document.body.append(output);
+  const blob=await new Promise(resolve=>output.toBlob(resolve,'image/png'));
+  const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='orbi-studio-cubeuv.png';link.textContent='Download baked environment';document.body.append(link);link.click();
+  status.textContent=JSON.stringify({revision:THREE.REVISION,width,height,bytes:blob.size,peakLinear:peak,milliseconds:Math.round(performance.now()-start),file:link.download,colorSpace:'srgb',flipY:false},null,2);
+  studio.traverse(object=>object.material?.dispose());cardGeometry.dispose();target.dispose();pmrem.dispose();renderer.dispose();renderer.forceContextLoss();
+};
+</script></html>
