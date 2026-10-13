@@ -9,6 +9,9 @@ const expressions = {
   concerned: { eyeX: .98, eyeY: .8, smile: -.25, open: 0, tilt: .16, gazeX: -.02, gazeY: -.03, lift: -.025, ring: -.025 },
 };
 export const ORBI_STATES = Object.freeze(Object.keys(expressions));
+export function resolveOrbiMotion({enabled = true, allowed = true, reduced = false} = {}) {
+  return {active:!!enabled && !!allowed && !reduced,locked:!allowed || !!reduced,reason:reduced ? 'device' : !allowed ? 'page' : !enabled ? 'orbi' : null};
+}
 export function sampleExpression(state, time = 0, motion = true) {
   const pose = { ...(expressions[state] || expressions.idle) };
   if (!motion) return pose;
@@ -19,5 +22,41 @@ export function sampleExpression(state, time = 0, motion = true) {
   pose.lift += Math.sin(t * 1.15) * .035;
   pose.tilt += Math.sin(t * .72) * .018;
   if (state === 'speaking') pose.open = .018 + (.5 + .5 * Math.sin(t * 14)) * .055;
+  return pose;
+}
+
+const launcherRest = Object.freeze({x:0,y:0,roll:0,yaw:0,scaleX:1,scaleY:1,shadowScale:1,shadowOpacity:.4});
+// Positions are percentages of the avatar, inside the launcher's reserved stage.
+// One turn, a rebound and a hover are separated by generous, grounded dwell time.
+const launcherLeap = [
+  [2.2, {}],
+  [2.45, {y:3,roll:-7,scaleX:1.07,scaleY:.93}],
+  [2.88, {x:-6,y:-24,roll:-12,scaleX:.98,scaleY:1.03}],
+  [3.52, {x:-10,y:-29,roll:3,yaw:Math.PI*1.4}],
+  [3.94, {x:-4,y:-11,roll:7,yaw:Math.PI*2}],
+  [4.17, {y:3,yaw:Math.PI*2,scaleX:1.09,scaleY:.91}],
+  [4.42, {x:-2,y:-12,yaw:Math.PI*2,scaleX:.99,scaleY:1.03}],
+  [4.8, {y:1,yaw:Math.PI*2,scaleX:1.03,scaleY:.97}],
+  [5.1, {yaw:Math.PI*2}],
+].map(([time,pose]) => [time,{...launcherRest,...pose}]);
+
+export function sampleLauncherMotion(time = 0, motion = true) {
+  const pose = {...launcherRest};
+  if (!motion || !Number.isFinite(time) || time < 0) return pose;
+  const cycle = time % 18;
+  if (cycle >= 2.2 && cycle < 5.1) {
+    const next = launcherLeap.findIndex(([at]) => at > cycle);
+    const [start,from] = launcherLeap[next-1], [end,to] = launcherLeap[next];
+    const progress = (cycle-start)/(end-start), ease = progress*progress*(3-2*progress);
+    for (const key in pose) pose[key] = from[key]+(to[key]-from[key])*ease;
+  } else if (cycle >= 8 && cycle < 12.2) {
+    const progress = (cycle-8)/4.2, envelope = Math.sin(progress*Math.PI)**2;
+    pose.x = -6*envelope;
+    pose.y = -(14+3*Math.sin(progress*Math.PI*3)**2)*envelope;
+    pose.roll = 5*Math.sin(progress*Math.PI*3)*envelope;
+  }
+  const height = Math.max(0,-pose.y)/30;
+  pose.shadowScale = 1-height*.4;
+  pose.shadowOpacity = .4-height*.2;
   return pose;
 }

@@ -1,6 +1,7 @@
 import {loadSketchfab,styleEliosWireframe} from './sketchfab-aircraft.js';
 import {orbitCamera} from './embedded-aircraft-camera.js';
 import {scrollProgress} from './aircraft-motion.js';
+import {setAircraftState} from './aircraft-state.js';
 
 const MODEL='309440e0ee9041b7b264a24898f0f8d6';
 const views={hero:{zoom:1.06},profile:{yaw:.85,pitch:.04,zoom:1.04},elevated:{yaw:-.65,pitch:.4,zoom:1.1},'three-quarter':{yaw:-.4,pitch:.15,zoom:1.07}};
@@ -50,6 +51,7 @@ export function mountElios(host,{standalone=false,view='hero'}={}){
  function sync(){
   if(disposed)return;
   selected=stage.dataset.platform==='elios';
+  setAircraftState(stage,'elios',ready?'ready':failed?'error':'loading');
   target.hidden=!selected;target.classList.toggle('is-loading',!ready);
   stage.classList.toggle('has-elios-model',selected&&ready);stage.classList.toggle('elios-loading',selected&&!ready&&!failed);
   status.hidden=ready;retry.hidden=!failed;status.textContent=failed?'The model is temporarily unavailable.':'Preparing Elios 3…';

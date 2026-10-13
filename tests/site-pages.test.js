@@ -4,7 +4,7 @@ import {readFile,access} from 'node:fs/promises';
 import {routes,fleet} from '../src/site/data.js';
 const read=path=>readFile(path==='/'?'index.html':path.slice(1)+'index.html','utf8');
 test('all website pages ship meaningful HTML, metadata and preserved employee access',async()=>{
- assert.equal(routes.length,16);
+ assert.equal(routes.length,20);
  for(const route of routes){const html=await read(route.path);assert.match(html,/<h1[^>]*>.+?<\/h1>/s,route.path);assert.match(html,/name="description" content="[^"]+"/);assert.ok(html.includes('https://www.orbitaerials.com'+route.path));assert.match(html,/property="og:image"/);assert.match(html,/https:\/\/www.orbitaerials.com\/log-in/);assert.doesNotMatch(html,/class="review-bar"|id="app"><\/div>/);}
 });
 test('local links and anchors resolve without relying on client routing',async()=>{

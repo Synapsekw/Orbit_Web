@@ -9,6 +9,7 @@
   "status": "published",
   "dateLabel": "Originally published in 2023",
   "originalDateText": "3/6/2023",
+  "originalTitle": "Drones in Construction Industry",
   "order": 2,
   "originalUrl": "https://www.orbitaerials.com/drones-in-construction-industry",
   "image": "construction",
@@ -61,7 +62,7 @@ If the question concerns levels, distances, earthworks or quantities, discuss a 
 
 An orthomosaic gives a georeferenced plan view; a point cloud records sampled three-dimensional positions; a textured mesh helps people explore captured form. The right output depends on the receiving team and its software. DJI’s [surveying overview](https://enterprise-insights.dji.com/blog/all-about-drone-surveying) explains these products.
 
-Agree accuracy, the coordinate system and validation before capture. Our [drone surveying guide](/revolutionizing-construction-the-game-changing-benefits-of-drone-technology/) explains the questions to include in that brief.
+Agree accuracy, the coordinate system and validation before capture. Our [drone surveying deliverables guide](/journal/drone-surveying-kuwait-deliverables/) explains the questions to include in that brief. For the next step, see how to [use drone maps in construction planning](/revolutionizing-construction-the-game-changing-benefits-of-drone-technology/).
 
 ## Bring remote teams into the discussion
 
@@ -85,7 +86,9 @@ Keep the archive organised independently of the final film. The team may later n
 - **Deliverables:** photography, video, walkthroughs or specified spatial outputs, with required formats.
 - **Operating context:** known access restrictions and site coordination requirements.
 
-Outdoor work needs a suitable weather and visibility window. Site access and flight permissions must be established for the project. Proposed dates remain subject to that planning process.
+Outdoor work needs a suitable weather and visibility window. On a Kuwait site, discuss heat, airborne dust, glare and the timing of work that could affect visibility or access. Plan around the actual equipment limits and site conditions, with an agreed response if a visit needs to move. Site access and any required flight permissions must be established for the project.
+
+For a project with several contractors or work zones, identify who can confirm access to each area and which reporting deadline the capture supports. Share a boundary or marked plan instead of relying on a project name alone. This helps define coverage and organise the resulting records.
 
 ## Common questions
 
@@ -95,7 +98,7 @@ Start with the reporting cycle and the rate of visible change. Weekly, monthly a
 
 ### Can drones replace site inspections?
 
-They can provide observations from difficult viewpoints and may reduce some access requirements. They do not eliminate every need for physical inspection, testing or professional judgement. The inspection objective determines what evidence is sufficient.
+They can provide observations from difficult viewpoints and may reduce some access requirements. They do not eliminate every need for physical inspection, testing or professional judgement. The inspection objective determines what evidence is sufficient. Discuss external observations through [visual inspection](/services/visual-inspection/); for enclosed assets, read our [confined-space drone inspection guide](/journal/confined-space-drone-inspection-kuwait/).
 
 ### Which aircraft does Orbit use?
 

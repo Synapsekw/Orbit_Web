@@ -1,8 +1,9 @@
+import {inspectionServices} from './site/inspection-services.js';
 export const services = [
   {
     slug: 'progress-documentation', number: '01', name: 'Progress documentation', short: 'A consistent record. A clearer conversation.',
     title: 'Every milestone.<br>In the picture.',
-    description: 'Scheduled aerial capture that turns a changing construction site into a clear, consistent visual record.',
+    description: 'Construction progress documentation in Kuwait: repeat drone photography, milestone videos and organised site records for your project team.',
     image: 'progress-aerial.webp', alt: 'Straight-down drone photograph of a large concrete construction site with cranes and unfinished floors',
     intro: 'Keep everyone connected to the same site.',
     body: 'From the first groundworks to the final finishing touches, regular photography gives your team a shared reference. We coordinate capture around your programme, with repeat viewpoints that make change easier to follow.',
@@ -14,7 +15,7 @@ export const services = [
   {
     slug: 'spatial-mapping', number: '02', name: 'Spatial mapping & intelligence', short: 'Bring the whole site into perspective.',
     title: 'From captured detail.<br>To a clearer decision.',
-    description: 'Aerial mapping, 3D models, and visual analysis that help teams understand the site beyond a single photograph.',
+    description: 'Drone surveying and aerial mapping in Kuwait. Agree orthomosaics, 3D models, point clouds, coordinate systems and accuracy checks before capture.',
     image: 'spatial-model-preview.webp', alt: 'Demonstration stadium scan by Sircher, comparing textured photogrammetry with a derived surface model',
     intro: 'A shared spatial view of your project.',
     body: 'We bring aerial imagery and technical outputs together to support construction oversight. From visual GIS maps to engineering-focused analysis, the scope starts with what your team needs to understand, compare, or review.',
@@ -26,7 +27,7 @@ export const services = [
   {
     slug: '360-walkthroughs', number: '03', name: '360° walkthroughs', short: 'Bring the site to the people who need to see it.',
     title: 'Be there.<br>From anywhere.',
-    description: 'Immersive views from the air and on the ground, giving remote teams a more complete picture of your project.',
+    description: '360° construction walkthroughs in Kuwait, with aerial and ground views that help remote teams review captured site conditions.',
     image: 'construction-360-preview.webp', alt: 'View inside a real 360 degree construction panorama showing unfinished masonry walls and exposed roof framing',
     intro: 'Give every review a little more context.',
     body: 'A single frame cannot show everything. Connected 360° views let stakeholders look around a space, understand its surroundings, and revisit captured conditions without arranging another visit.',
@@ -38,7 +39,7 @@ export const services = [
   {
     slug: 'time-lapse', number: '04', name: 'Time-lapse & hyperlapse', short: 'Months of progress. A story in motion.',
     title: 'See the change.<br>Feel the momentum.',
-    description: 'Construction sequences that bring weeks and months of progress together in a compelling visual story.',
+    description: 'Construction time-lapse and drone hyperlapse in Kuwait. Plan recurring viewpoints and turn project milestones into clear visual updates.',
     image: 'construction-timelapse.webp', alt: 'Still from a construction time-lapse showing concrete pumps, foundations and activity across a site',
     intro: 'Make the transformation visible.',
     body: 'Regular capture and a considered edit reveal changes that are easy to miss day to day. We plan viewpoints and timing around your project, then shape the footage for the audience you want to reach.',
@@ -50,7 +51,7 @@ export const services = [
   {
     slug: 'handover-media', number: '05', name: 'Handover films & photography', short: 'Give the finished project the view it deserves.',
     title: 'Built with purpose.<br>Presented with care.',
-    description: 'Cinematic aerial films and photography that communicate the scale, detail, and achievement of a completed project.',
+    description: 'Aerial photography and handover films in Kuwait for completed buildings and construction projects, prepared for portfolios and stakeholder presentations.',
     image: 'handover-architecture.webp', alt: 'Completed contemporary building at dusk with warm interior lighting and glass facades',
     intro: 'A lasting record of what you have built.',
     body: 'Completion is a moment worth capturing well. We combine aerial perspectives, thoughtful framing, and careful editing to help your project speak clearly to clients, investors, and the people who brought it to life.',
@@ -59,6 +60,7 @@ export const services = [
     tags: ['Project handover', 'Architectural imagery', 'Brand storytelling'],
     faq: [['Can we include earlier construction footage?', 'Yes. If you have documented the project with us, we can bring that material into the final story. Existing footage can also be reviewed for inclusion.'], ['How do you decide the style of the film?', 'We start with the project, the intended audience, and where the film will be used, then agree the story and deliverable formats.']],
   },
+  ...inspectionServices,
 ];
 
 export const articles = [

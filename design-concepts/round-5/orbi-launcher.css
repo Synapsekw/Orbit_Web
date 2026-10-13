@@ -1,8 +1,8 @@
 .orbi-launcher,
 .orbi-launcher:hover {
   width: 88px;
-  height: 88px;
-  min-height: 88px;
+  height: 116px;
+  min-height: 116px;
   padding: 0;
   gap: 0;
   border: 0;
@@ -10,6 +10,7 @@
   background: transparent;
   box-shadow: none;
   justify-content: center;
+  align-items: flex-end;
   isolation: isolate;
 }
 .orbi-launcher__label { display: none; }
@@ -18,23 +19,10 @@
   z-index: 1;
   width: 88px;
   height: 88px;
-}
-.orbi-launcher::after {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  left: 25px;
-  right: 25px;
-  bottom: 1px;
-  height: 9px;
-  border-radius: 50%;
-  background: #d6b56d70;
-  filter: blur(7px);
-  pointer-events: none;
+  margin-top: 0;
 }
 @media (max-width: 620px) {
   .orbi-launcher,
-  .orbi-launcher:hover,
-  .orbi-launcher__avatar { width: 80px; height: 80px; min-height: 80px; }
-  .orbi-launcher::after { left: 23px; right: 23px; height: 8px; }
+  .orbi-launcher:hover { width: 76px; height: 100px; min-height: 100px; }
+  .orbi-launcher__avatar { width: 76px; height: 76px; }
 }
