@@ -8,7 +8,9 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
  const stage=hero.querySelector('.aircraft-presentation'),target=document.createElement('div');
  target.className='m400-canvas';target.hidden=true;stage.append(target);
  let renderer;
- try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});}catch{target.remove();return null;}
+ // Dense CAD lines make multisample resolves costly on software/mobile GPUs.
+ // Keep the bounded high-DPI canvas, without the extra MSAA render targets.
+ try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:false,powerPreference:'low-power'});}catch{target.remove();return null;}
  renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<600?1.25:1.5));renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
  const decoder=new DRACOLoader().setDecoderPath('/draco/'),loader=new GLTFLoader().setDRACOLoader(decoder);
  let gltf,metadata;const lineGeometries=[];
@@ -33,8 +35,8 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
  const center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());
  const normalization=4.7/Math.max(size.x,size.y,size.z),surfaceMaterial=new THREE.MeshBasicMaterial({color:0x071421,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1,side:THREE.DoubleSide});
  const originals=new Set(),surfaceMeshes=[];model.traverse(o=>{if(o.isMesh){originals.add(o.material);o.material=surfaceMaterial;surfaceMeshes.push(o);}});originals.forEach(m=>m.dispose());
- const topologyMaterial=new THREE.MeshBasicMaterial({color:0x6d94af,wireframe:true,transparent:true,opacity:.095,depthWrite:false});
- surfaceMeshes.forEach(o=>o.add(new THREE.Mesh(o.geometry,topologyMaterial)));
+ // CAD feature edges provide the wireframe. Re-drawing every surface triangle
+ // adds hundreds of thousands of redundant lines and stalls software GPUs.
  const lineMaterial=new THREE.LineBasicMaterial({color:0xd6b56d,transparent:true,opacity:.75}),rotors=[];
  metadata.parts.forEach(part=>{
   const node=model.getObjectByName(part.name);node.add(new THREE.LineSegments(part.geometry,lineMaterial));
@@ -83,7 +85,7 @@ export async function mountM400(hero,{id='m400',name='DJI M400',metadataUrl='/mo
  function fallback(){failed=true;selected=false;stop();target.hidden=true;stage.classList.remove('has-'+id+'-model');onError();if(stage.dataset.platform===id)note.textContent='3D is unavailable on this device. Aircraft reference shown.';}
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fallback();});
  select();
- function destroy(){disposed=true;stop();mutation.disconnect();resizeObserver.disconnect();observer.disconnect();removeEventListener('scroll',schedule);document.removeEventListener('visibilitychange',schedule);document.removeEventListener('orbit-motion',schedule);document.removeEventListener('orbit-viewer-open',modalOpen);document.removeEventListener('orbit-viewer-close',modalClose);reduced.removeEventListener('change',schedule);controls.removeEventListener('click',click,true);surfaceMeshes.forEach(o=>o.geometry.dispose());surfaceMaterial.dispose();topologyMaterial.dispose();lineGeometries.forEach(g=>g.dispose());lineMaterial.dispose();renderer.dispose();target.remove();}
+ function destroy(){disposed=true;stop();mutation.disconnect();resizeObserver.disconnect();observer.disconnect();removeEventListener('scroll',schedule);document.removeEventListener('visibilitychange',schedule);document.removeEventListener('orbit-motion',schedule);document.removeEventListener('orbit-viewer-open',modalOpen);document.removeEventListener('orbit-viewer-close',modalClose);reduced.removeEventListener('change',schedule);controls.removeEventListener('click',click,true);surfaceMeshes.forEach(o=>o.geometry.dispose());surfaceMaterial.dispose();lineGeometries.forEach(g=>g.dispose());lineMaterial.dispose();renderer.dispose();target.remove();}
  addEventListener('pagehide',e=>{if(!e.persisted)destroy();},{once:true});
  return {destroy};
 }

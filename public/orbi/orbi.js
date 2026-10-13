@@ -12027,12 +12027,13 @@ function hc(e, t = {}) {
 		ie = e.matches, le();
 	}), c === "artwork") return ue(), G;
 	try {
+		let t = Math.min(devicePixelRatio || 1, n ? 2 : 1.75);
 		y = new $s({
 			canvas: d,
 			alpha: !0,
-			antialias: !0,
+			antialias: !n || t < 1.5,
 			powerPreference: "low-power"
-		}), y.setPixelRatio(Math.min(devicePixelRatio || 1, n ? 2 : 1.75)), y.outputColorSpace = O, y.toneMapping = 4, y.toneMappingExposure = 1.1, w = new ht(), T = new mi(33, 1, .1, 30), T.position.set(0, 0, 5.75), w.add(new ni(15791359, 2306892, 2.4));
+		}), y.setPixelRatio(t), y.outputColorSpace = O, y.toneMapping = 4, y.toneMappingExposure = 1.1, w = new ht(), T = new mi(33, 1, .1, 30), T.position.set(0, 0, 5.75), w.add(new ni(15791359, 2306892, 2.4));
 		for (let [e, t, n, r, i] of [
 			[
 				16773597,

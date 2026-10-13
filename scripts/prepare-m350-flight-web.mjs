@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import {STLLoader} from 'three/addons/loaders/STLLoader.js';
 import {Document,NodeIO} from '@gltf-transform/core';
 import {ALL_EXTENSIONS} from '@gltf-transform/extensions';
-import {weld,simplify,draco} from '@gltf-transform/functions';
+import {weld,simplifyPrimitive,draco} from '@gltf-transform/functions';
 import {MeshoptSimplifier} from 'meshoptimizer';
 import draco3d from 'draco3dgltf';
 
@@ -38,7 +38,13 @@ for(const part of parts){
 }
 await MeshoptSimplifier.ready;
 const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'draco3d.encoder':await draco3d.createEncoderModule()});
-await doc.transform(weld(),simplify({simplifier:MeshoptSimplifier,ratio:.28,error:.001}),draco());
+await doc.transform(weld());
+// The detailed CAD lines remain intact; simplify only their backing surfaces.
+for(const mesh of doc.getRoot().listMeshes())for(const primitive of mesh.listPrimitives()){
+ const body=mesh.getName()==='body';
+ simplifyPrimitive(primitive,{simplifier:MeshoptSimplifier,ratio:body ? .03 : .28,error:body ? .005 : .001});
+}
+await doc.transform(draco());
 const model='/models/m350-flight.glb';await fs.writeFile('public'+model,await io.writeBinary(doc));
 const metadata={source:'https://enterprise.dji.com/matrice-350-rtk/downloads',model,parts:manifest,framingBounds,rights:'Manufacturer CAD; local evaluation. Public redistribution permission remains to be confirmed.'};
 await fs.writeFile('public/models/m350-cad.json',JSON.stringify(metadata,null,2));

@@ -1,5 +1,7 @@
 # Mobile performance and PWA follow-up
 
+Follow-up: the user's subsequent Chromium 107 report still timed out after these changes. The exact old-browser reproduction and drone-rendering fix are documented in [Chromium 107 graphics stall](software-rendering-performance.md). The modern-browser scores below do not establish that the older-browser issue was fixed by this first pass.
+
 The reported Lighthouse 9.6.8 result was 45 performance with a timeout, 163,960 ms total blocking time and 0.376 layout shift. Its missing manifest, service worker and install icons were real omissions. PWA support and performance are separate concerns.
 
 ## Measured causes
