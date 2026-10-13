@@ -6,11 +6,13 @@
 
 **Constraints:** Preserve the running local site and private configuration. Never commit credentials, local test data, source captures or dependencies. Do not merge the pull request or enable automatic merging. Keep required build assets and their attribution.
 
-- [ ] Initialise Git locally, connect the supplied remote, and create an empty baseline for comparison.
-- [ ] Exclude local artifacts, inspect staged file sizes and scan staged contents for private values before publishing.
-- [ ] Add pinned GitHub Actions for Node 24 install, build, tests, repository scan and public-output scan; add a concise PR template and contributor instructions.
-- [ ] Verify the build and tests from the import; push the branch and create the initial website/CI pull request.
-- [ ] Inspect GitHub CI results and fix failures. Protect `main` with pull requests and required passing checks; leave all merges manual.
-- [ ] Attach the pull request to this chat and report its status and review link.
+- [x] Initialise Git locally, connect the supplied remote, and create an empty baseline for comparison.
+- [x] Exclude local artifacts, inspect staged file sizes and scan staged contents for private values before publishing.
+- [x] Add pinned GitHub Actions for Node 24 install, build, tests, repository scan and public-output scan; add a concise PR template and contributor instructions.
+- [x] Verify the build and tests from the import; push the branch and create the initial website/CI pull request.
+- [x] Inspect GitHub CI results and fix failures. Protect `main` with pull requests and required passing checks; leave all merges manual.
+- [x] Attach the pull request to this chat and report its status and review link.
+
+Result: [PR #1](https://github.com/Synapsekw/Orbit_Web/pull/1). Initial clean Ubuntu CI passed all 66 tests, build, repository scan and public-output scan. `main` requires an up-to-date pull request and `Website validation`, including for administrators; force pushes and deletions are blocked. Auto-merge is disabled. The application remains on the feature branch for manual owner review. No Netlify deployment or DNS change was made.
 
 Review focus: clean clone completeness, cross-platform filenames, secret exclusion, large asset limits, and CI completing without OpenAI/Grok credentials. A solo repository owner authors the PR through the configured account, so protection should require a PR and green checks without requiring an impossible self-approval.
